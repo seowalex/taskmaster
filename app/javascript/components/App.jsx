@@ -1,11 +1,10 @@
-import React from "react"
+import React from 'react';
 import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link
-} from "react-router-dom"
-import Home from "../components/Home"
+} from 'react-router-dom';
+import Home from './Home';
 
 export default function App() {
   return (
@@ -14,5 +13,5 @@ export default function App() {
         <Route path="/" exact component={Home} />
       </Switch>
     </Router>
-  )
+  );
 }
