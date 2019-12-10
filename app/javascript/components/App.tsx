@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import {
   BrowserRouter as Router,
   Switch,
@@ -7,7 +7,7 @@ import {
 import Home from 'components/Home';
 import NotFound from 'components/NotFound';
 
-export default function App() {
+export default function App(): JSX.Element {
   return (
     <Router>
       <Switch>

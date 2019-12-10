@@ -1,7 +1,7 @@
-import React from 'react';
+import * as React from 'react';
 import { Helmet } from 'react-helmet';
 
-const Error = () => (
+const Error = (): JSX.Element => (
   <>
     <Helmet>
       <title>404 Not Found</title>
