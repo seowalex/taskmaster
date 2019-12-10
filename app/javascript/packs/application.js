@@ -1,3 +1,6 @@
+import 'bootstrap/dist/js/bootstrap';
+import 'bootstrap/scss/bootstrap.scss';
+
 // This file is automatically compiled by Webpack, along with any other files
 // present in this directory. You're encouraged to place your actual application logic in
 // a relevant structure within app/javascript and only use these pack files to reference
@@ -19,6 +22,3 @@ const componentRequireContext = require.context('components', true);
 const ReactRailsUJS = require('react_ujs');
 
 ReactRailsUJS.useContext(componentRequireContext);
-
-require('bootstrap/dist/js/bootstrap');
-require('bootstrap/scss/bootstrap.scss');
