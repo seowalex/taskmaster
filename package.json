@@ -2,6 +2,7 @@
   "name": "cvwo",
   "private": true,
   "dependencies": {
+    "@babel/core": "^7.7.5",
     "@babel/preset-react": "^7.7.4",
     "@rails/actioncable": "^6.0.0",
     "@rails/activestorage": "^6.0.0",
@@ -16,12 +17,14 @@
     "react-dom": "^16.12.0",
     "react-helmet": "^5.2.1",
     "react-router-dom": "^5.1.2",
-    "react_ujs": "^2.6.0"
+    "react_ujs": "^2.6.0",
+    "webpack": "^4.41.2"
   },
   "version": "0.1.0",
   "devDependencies": {
     "eslint": "^6.7.2",
     "eslint-config-airbnb": "^18.0.1",
+    "eslint-import-resolver-webpack": "^0.12.0",
     "eslint-plugin-import": "^2.19.1",
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.17.0",

@@ -23,4 +23,11 @@ module.exports = {
   ],
   rules: {
   },
+  settings: {
+    'import/resolver': {
+      webpack: {
+        config: 'config/webpack/development.js',
+      },
+    },
+  },
 };

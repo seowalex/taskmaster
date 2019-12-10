@@ -4,8 +4,8 @@ import {
   Switch,
   Route,
 } from 'react-router-dom';
-import Home from './Home';
-import NotFound from './NotFound';
+import Home from 'components/Home';
+import NotFound from 'components/NotFound';
 
 export default function App() {
   return (

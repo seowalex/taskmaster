@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 const { environment } = require('@rails/webpacker');
 const webpack = require('webpack');
 
