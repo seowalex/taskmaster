@@ -21,3 +21,4 @@ const ReactRailsUJS = require('react_ujs');
 ReactRailsUJS.useContext(componentRequireContext);
 
 require('bootstrap/dist/js/bootstrap');
+require('bootstrap/scss/bootstrap.scss');
