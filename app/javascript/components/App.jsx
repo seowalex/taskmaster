@@ -3,22 +3,19 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link,
 } from 'react-router-dom';
 import Home from './Home';
-import About from './About';
+import NotFound from './NotFound';
 
 export default function App() {
   return (
     <Router>
-      <Link to="/">Home</Link>
-      <Link to="/about">About</Link>
       <Switch>
-        <Route path="/about">
-          <About />
-        </Route>
-        <Route path="/">
+        <Route exact path="/">
           <Home />
+        </Route>
+        <Route path="*">
+          <NotFound />
         </Route>
       </Switch>
     </Router>
