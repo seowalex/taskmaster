@@ -31,7 +31,6 @@ module.exports = {
         extensions: ['.jsx', '.tsx']
       }
     ],
-    // FIX: temporary workaround until https://github.com/benmosher/eslint-plugin-import/issues/1558 is merged
     'import/extensions': [
       'error',
       'always',
