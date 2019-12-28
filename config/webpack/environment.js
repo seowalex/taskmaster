@@ -9,4 +9,5 @@ environment.plugins.append('Provide', new webpack.ProvidePlugin({
 }));
 
 environment.loaders.prepend('typescript', typescript);
+
 module.exports = environment;
