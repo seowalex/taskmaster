@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Helmet } from 'react-helmet';
 
-const Error = (): JSX.Element => (
+const Error: React.FunctionComponent = () => (
   <>
     <Helmet>
       <title>404 Not Found</title>

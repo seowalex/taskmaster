@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Helmet } from 'react-helmet';
 
-const Home = (): JSX.Element => (
+const Home: React.FunctionComponent = () => (
   <>
     <Helmet>
       <title>Todo Manager</title>
