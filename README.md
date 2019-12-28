@@ -1,24 +1,5 @@
-# README
+# Computing for Voluntary Welfare Organisations (CVWO) AY2019/20 Assignment
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+**Name:** Seow Alex
 
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+**Matriculation Number:** A199262U
