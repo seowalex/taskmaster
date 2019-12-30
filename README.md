@@ -3,3 +3,7 @@
 **Name:** Seow Alex
 
 **Matriculation Number:** A199262U
+
+## Screenshot
+
+![Screenshot](/../mid-assignment-submission/screenshot.png?raw=true)
