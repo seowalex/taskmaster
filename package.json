@@ -2,8 +2,8 @@
   "name": "cvwo",
   "private": true,
   "scripts": {
-    "gen-typings": "yarn run tsm app/javascript/**/*.scss",
-    "watch-typings": "yarn run tsm app/javascript/**/*.scss -w"
+    "gen-typings": "yarn run tsm 'app/javascript/**/*.scss'",
+    "watch-typings": "yarn run tsm 'app/javascript/**/*.scss' -w"
   },
   "dependencies": {
     "@babel/core": "^7.7.5",
