@@ -7,3 +7,7 @@
 ## Screenshot
 
 ![Screenshot](/../mid-assignment-submission/screenshot.png?raw=true)
+
+## Write-up
+
+[Write-up](/../mid-assignment-submission/writeup.pdf?raw=true)
