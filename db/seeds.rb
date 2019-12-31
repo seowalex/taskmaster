@@ -6,5 +6,6 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
-Task.create(title: "Lorem Ipsum", description: "This is a task!", completed: false, priority: 1, position: 1, due_date: Date.new(2019, 1, 1), tag_list: ["awesome", "slick", "hefty"])
-Task.create(title: "Hello World", description: "This is another task!", completed: false, priority: 3, position: 2, due_date: Date.new(2019, 1, 2), tag_list: ["awesome"], ["slick"], ["light"])
+20.times do
+  Task.create(title: Faker::Books::Lovecraft.sentence.delete_suffix("."), description: Faker::Books::Lovecraft.paragraph, completed: Faker::Boolean.boolean, priority: Faker::Number.within(range: 1..3), position: Faker::Number.unique.within(range: 1..20), due_date: Faker::Date.in_date_period, tag_list: Faker::Books::Lovecraft.words)
+end
