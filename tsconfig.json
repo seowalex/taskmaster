@@ -10,7 +10,8 @@
     "target": "es5",
     "jsx": "react",
     "baseUrl": "app/javascript",
-    "strict": true
+    "strict": true,
+    "esModuleInterop": true
   },
   "exclude": [
     "**/*.spec.ts",

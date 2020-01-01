@@ -1,6 +1,6 @@
-import * as React from 'react';
+import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import * as styles from './navbar.module.scss';
+import styles from './navbar.module.scss';
 
 const Navbar: React.FunctionComponent = () => (
   <nav className="navbar sticky-top navbar-expand navbar-light">
