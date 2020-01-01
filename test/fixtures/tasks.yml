@@ -6,7 +6,8 @@ one:
   completed: false
   priority: 1
   position: 1
-  due_date: 2019-12-31
+  due_date: 2020-01-01
+  user: one
 
 two:
   title: MyText
@@ -14,4 +15,5 @@ two:
   completed: false
   priority: 1
   position: 1
-  due_date: 2019-12-31
+  due_date: 2020-01-01
+  user: two
