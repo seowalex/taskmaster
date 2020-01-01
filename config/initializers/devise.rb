@@ -6,7 +6,7 @@ Devise.setup do |config|
   config.navigational_formats = []
 
   config.jwt do |jwt|
-    jwt.secret = '91dcdba94f9a98e23bd06338d2a94332f3608f5c91afc981efc2e82c6104a6c9190b7a1abbe8b16983f46a38ab67d8b879f8046971bff8b124db5faea1867f0a'
+    jwt.secret = Rails.application.credentials.secret_key_base
     jwt.dispatch_requests = [
       ['POST', %r{^/api/login$}]
     ]
