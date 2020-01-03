@@ -1,15 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Helmet } from 'react-helmet';
 import axios from 'axios';
+import { AuthContext } from 'contexts/AuthContext';
 import Navbar from 'components/Navbar';
 
 const Home: React.FunctionComponent = () => {
   const [tasks, setTasks] = useState();
+  // @ts-ignore
+  const { state } = useContext(AuthContext);
 
   useEffect(() => {
     axios.get('/api/tasks', {
       headers: {
-        authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJlYTg0MzJjMS0wYzJkLTRmYzMtOTM4Yy1jMmEwMmYyZjAzYmIiLCJzdWIiOiIyIiwic2NwIjoidXNlciIsImF1ZCI6bnVsbCwiaWF0IjoxNTc3ODc4MDU5LCJleHAiOjE1Nzc5NjQ0NTl9.gBk2XtAiHkIrZ5uag3wKlWSGouVjK78l4pwVID1H3do'
+        Authorization: state.token,
       },
     }).then((response) => {
       setTasks(response.data.data);
@@ -19,13 +22,13 @@ const Home: React.FunctionComponent = () => {
   return (
     <>
       <Helmet>
-        <title>Todo Manager</title>
+        <title>Taskmaster</title>
       </Helmet>
       <Navbar />
       <div className="container">
         <form>
           <div className="form-group">
-            <input type="text" className="form-control" id="todoINput" placeholder="Add task and press Enter to save." />
+            <input type="text" className="form-control" id="todoInput" placeholder="Add task and press Enter to save." />
           </div>
         </form>
         <ul className="list-group">

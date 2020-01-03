@@ -25,12 +25,6 @@ module.exports = {
     '@typescript-eslint',
   ],
   rules: {
-    'react/jsx-filename-extension': [
-      1,
-      {
-        extensions: ['.jsx', '.tsx']
-      }
-    ],
     'import/extensions': [
       'error',
       'always',
@@ -41,6 +35,19 @@ module.exports = {
         jsx: 'never',
       },
     ],
+    'react/jsx-filename-extension': [
+      'warn',
+      {
+        extensions: ['.jsx', '.tsx']
+      }
+    ],
+    'react/jsx-props-no-spreading': ['error', {
+      custom: 'ignore',
+    }],
+    'jsx-a11y/label-has-associated-control': ['error', {
+      assert: 'either',
+    }],
+    'jsx-a11y/no-autofocus': ['off'],
   },
   settings: {
     'import/extensions': ['.js', '.jsx', '.ts', '.tsx'],
