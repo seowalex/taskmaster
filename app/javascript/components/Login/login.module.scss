@@ -1,3 +1,21 @@
+@keyframes shake {
+  10%, 90% {
+    transform: translate(-1px, 0);
+  }
+
+  20%, 80% {
+    transform: translate(2px, 0);
+  }
+
+  30%, 50%, 70% {
+    transform: translate(-4px, 0);
+  }
+
+  40%, 60% {
+    transform: translate(4px, 0);
+  }
+}
+
 .formLabelGroup {
   position: relative;
   
@@ -19,6 +37,11 @@
         padding-bottom: 0.35rem;
         font-size: 0.75rem;
       }
+    }
+
+    &:global(.is-invalid), &:global(.is-invalid) ~ label {
+      animation: shake 0.6s;
+      transform: translate(0, 0);
     }
   }
 
@@ -42,24 +65,20 @@
   }
 }
 
-/* Fallback for Edge
--------------------------------------------------- */
 @supports (-ms-ime-align: auto) {
   .formLabelGroup > label {
     display: none;
   }
   .formLabelGroup input::-ms-input-placeholder {
-    color: #777;
+    color: #6c757d;
   }
 }
 
-/* Fallback for IE
--------------------------------------------------- */
 @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
   .formLabelGroup > label {
     display: none;
   }
   .formLabelGroup input:-ms-input-placeholder {
-    color: #777;
+    color: #6c757d;
   }
 }

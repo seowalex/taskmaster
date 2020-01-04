@@ -34,6 +34,11 @@ const Login: FunctionComponent = () => {
       ...data,
       [target.name]: target.type === 'checkbox' ? target.checked : target.value,
     });
+
+    setRequest({
+      ...request,
+      isAuthorised: true,
+    });
   };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
