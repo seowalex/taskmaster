@@ -1,32 +1,39 @@
-import React, { FunctionComponent, ReactNode, useReducer, useEffect } from 'react';
+import React, {
+  FunctionComponent,
+  ReactNode,
+  useReducer,
+  useContext,
+} from 'react';
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Redirect,
   RouteProps,
-  RouteComponentProps,
 } from 'react-router-dom';
 import Home from 'components/Home';
 import Login from 'components/Login';
 import NotFound from 'components/NotFound';
-import { AuthContext, reducer, initialState } from 'contexts/AuthContext';
+import {
+  AuthContext,
+  authReducer,
+  authInitialState,
+} from 'contexts/AuthContext';
 import './app.scss';
 
 const PrivateRoute: FunctionComponent<RouteProps> = ({ children, ...rest }) => {
-  // @ts-ignore
-  const { state } = React.useContext(AuthContext);
+  const { state } = useContext(AuthContext);
 
-  if (localStorage.getItem('token') !== null) {
+  if (localStorage.getItem('user') !== null) {
     state.isAuthenticated = true;
-    state.user = localStorage.getItem('user');
+    state.user = JSON.parse(localStorage.getItem('user') as string);
     state.token = localStorage.getItem('token');
   }
 
   return (
     <Route
       {...rest}
-      render={({ location }: RouteComponentProps): ReactNode => (
+      render={({ location }): ReactNode => (
         state.isAuthenticated ? (
           children
         ) : (
@@ -42,20 +49,42 @@ const PrivateRoute: FunctionComponent<RouteProps> = ({ children, ...rest }) => {
   );
 };
 
-const App: FunctionComponent = () => {
-  const [state, dispatch] = useReducer(reducer, initialState);
+const PublicRoute: FunctionComponent<RouteProps> = ({ children, ...rest }) => {
+  const { state } = useContext(AuthContext);
+
+  if (localStorage.getItem('user') !== null) {
+    state.isAuthenticated = true;
+    state.user = JSON.parse(localStorage.getItem('user') as string);
+    state.token = localStorage.getItem('token');
+  }
 
   return (
-    // @ts-ignore
+    <Route
+      {...rest}
+      render={(): ReactNode => (
+        state.isAuthenticated ? (
+          <Redirect to="/" />
+        ) : (
+          children
+        )
+      )}
+    />
+  );
+};
+
+const App: FunctionComponent = () => {
+  const [state, dispatch] = useReducer(authReducer, authInitialState);
+
+  return (
     <AuthContext.Provider value={{ state, dispatch }}>
       <Router>
         <Switch>
           <PrivateRoute exact path="/">
             <Home />
           </PrivateRoute>
-          <Route path="/login">
+          <PublicRoute path="/login">
             <Login />
-          </Route>
+          </PublicRoute>
           <Route path="*">
             <NotFound />
           </Route>

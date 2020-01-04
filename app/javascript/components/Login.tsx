@@ -1,29 +1,48 @@
-import React, { FunctionComponent, FormEvent, useState, useContext } from 'react';
-import { useHistory } from 'react-router-dom';
+import React, {
+  FunctionComponent,
+  FormEvent,
+  useState,
+  useContext,
+} from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import axios from 'axios';
 import { AuthContext } from 'contexts/AuthContext';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styles from './login.module.scss';
 
 const Login: FunctionComponent = () => {
-  // @ts-ignore
+  const history = useHistory();
+  const location = useLocation();
+  const { from } = location.state || { from: { pathname: '/' } };
   const { dispatch } = useContext(AuthContext);
-  const [authorised, setAuthorised] = useState(true);
+  const [auth, setAuth] = useState({
+    isAuthorised: true,
+    isLoading: false,
+    error: '',
+  });
   const [data, setData] = useState({
     email: '',
     password: '',
+    remember: true,
   });
-  const history = useHistory();
 
   const handleChange = (e: FormEvent<HTMLInputElement>): void => {
+    const target = e.target as HTMLInputElement;
+
     setData({
       ...data,
-      [(e.target as HTMLInputElement).name]: (e.target as HTMLInputElement).value,
+      [target.name]: target.type === 'checkbox' ? target.checked : target.value,
     });
   };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
+
+    setAuth({
+      ...auth,
+      isLoading: true,
+    });
 
     axios.post('/api/login', {
       user: {
@@ -34,16 +53,22 @@ const Login: FunctionComponent = () => {
       headers: { 'Content-Type': 'application/json' },
     }).then((response) => {
       dispatch({
-        type: 'login',
+        type: data.remember ? 'login' : 'login_once',
         payload: {
-          user: response.data.email,
+          user: {
+            email: response.data.email,
+          },
           token: response.headers.authorization,
         },
       });
 
-      history.push('/');
-    }).catch(() => {
-      setAuthorised(false);
+      history.replace(from);
+    }).catch((error) => {
+      setAuth({
+        isAuthorised: false,
+        isLoading: false,
+        error: error.response.data.error,
+      });
     });
   };
 
@@ -58,23 +83,25 @@ const Login: FunctionComponent = () => {
             <h1 className="display-4 text-center mb-5">Taskmaster</h1>
 
             <div className={`form-group ${styles.formLabelGroup}`}>
-              <input type="email" id="inputEmail" className={`form-control ${authorised ? '' : 'is-invalid'}`} placeholder="Email address" name="email" value={data.email} onChange={handleChange} required autoFocus />
+              <input type="email" id="inputEmail" className={`form-control ${auth.isAuthorised ? '' : 'is-invalid'}`} placeholder="Email address" name="email" value={data.email} onChange={handleChange} required autoFocus />
               <label htmlFor="inputEmail">Email address</label>
             </div>
 
             <div className={`form-group ${styles.formLabelGroup}`}>
-              <input type="password" id="inputPassword" className={`form-control ${authorised ? '' : 'is-invalid'}`} placeholder="Password" name="password" value={data.password} onChange={handleChange} required />
+              <input type="password" id="inputPassword" className={`form-control ${auth.isAuthorised ? '' : 'is-invalid'}`} placeholder="Password" name="password" value={data.password} onChange={handleChange} required />
               <div className="invalid-feedback">
-                Invalid Email or password.
+                {auth.error}
               </div>
               <label htmlFor="inputEmail">Password</label>
             </div>
 
             <div className="form-group custom-control custom-checkbox">
-              <input type="checkbox" className="custom-control-input" id="inputRemember" />
+              <input type="checkbox" className="custom-control-input" id="inputRemember" name="remember" checked={data.remember} onChange={handleChange} />
               <label className="custom-control-label" htmlFor="inputRemember">Remember me</label>
             </div>
-            <button className="btn btn-lg btn-primary btn-block" type="submit">Log in</button>
+            <button className="btn btn-lg btn-primary btn-block" type="submit">
+              {auth.isLoading ? <FontAwesomeIcon icon="circle-notch" spin /> : 'Log in'}
+            </button>
           </form>
         </div>
       </div>

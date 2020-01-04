@@ -1,31 +1,57 @@
-import { createContext, Reducer } from 'react';
+import { createContext, Reducer, Dispatch } from 'react';
 
-export const initialState = {
+interface AuthState {
+  isAuthenticated: boolean;
+  user: {
+    email: string;
+  } | null;
+  token: string | null;
+}
+
+interface AuthAction {
+  readonly type: string;
+  readonly payload?: {
+    user: {
+      email: string;
+    };
+    token: string;
+  };
+}
+
+interface AuthContext {
+  readonly state: AuthState;
+  readonly dispatch: Dispatch<AuthAction>;
+}
+
+export const authInitialState = {
   isAuthenticated: false,
   user: null,
   token: null,
 };
 
-export const AuthContext = createContext(initialState);
-
-export const reducer: Reducer<any, any> = (state, action) => {
+export const authReducer: Reducer<AuthState, AuthAction> = (state, action) => {
   switch (action.type) {
     case 'login':
-      localStorage.setItem('user', action.payload.user);
-      localStorage.setItem('token', action.payload.token);
+      localStorage.setItem('user', JSON.stringify(action.payload!.user));
+      localStorage.setItem('token', action.payload!.token);
 
       return {
-        ...state,
         isAuthenticated: true,
-        user: action.payload.user,
-        token: action.payload.token,
+        user: action.payload!.user,
+        token: action.payload!.token,
+      };
+
+    case 'login_once':
+      return {
+        isAuthenticated: true,
+        user: action.payload!.user,
+        token: action.payload!.token,
       };
 
     case 'logout':
       localStorage.clear();
 
       return {
-        ...state,
         isAuthenticated: false,
         user: null,
         token: null,
@@ -35,3 +61,5 @@ export const reducer: Reducer<any, any> = (state, action) => {
       return state;
   }
 };
+
+export const AuthContext = createContext({} as AuthContext);

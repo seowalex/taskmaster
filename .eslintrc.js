@@ -44,6 +44,9 @@ module.exports = {
     'react/jsx-props-no-spreading': ['error', {
       custom: 'ignore',
     }],
+    'react/prop-types': ['error', {
+      skipUndeclared: true,
+    }],
     'jsx-a11y/label-has-associated-control': ['error', {
       assert: 'either',
     }],
