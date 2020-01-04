@@ -2771,6 +2771,14 @@ diffie-hellman@^5.0.0:
     miller-rabin "^4.0.0"
     randombytes "^2.0.0"
 
+directory-named-webpack-plugin@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/directory-named-webpack-plugin/-/directory-named-webpack-plugin-4.0.1.tgz#d5f422310bb446297ec422d3656dbf0921a6fa26"
+  integrity sha512-cULe7U64O9NM+O+L9gfcVKPo/A0pNEntsXTpuRHoCFMYE5pV9XQrJI9mJ8bgo0WKPmKPw/kozXfRolNNFJICCA==
+  dependencies:
+    enhanced-resolve "^4.0.0"
+    object-assign "^4.1.0"
+
 dns-equal@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/dns-equal/-/dns-equal-1.0.0.tgz#b39e7f1da6eb0a75ba9c17324b34753c47e0654d"

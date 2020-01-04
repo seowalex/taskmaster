@@ -11,7 +11,13 @@
     "jsx": "react",
     "baseUrl": "app/javascript",
     "strict": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "paths": {
+      "components/Home": ["components/Home/Home"],
+      "components/Login": ["components/Login/Login"],
+      "components/Navbar": ["components/Navbar/Navbar"],
+      "components/NotFound": ["components/NotFound/NotFound"]
+    }
   },
   "exclude": [
     "**/*.spec.ts",
