@@ -4,7 +4,7 @@ class Api::TaskResource < JSONAPI::Resource
 
   filter :search, apply: ->(records, value, _options) {
     search = value.join(",").split(" ").select{ |word| word[0] != "#" }.join(" ")
-    tags = value.join(",").scan(/(?:(?<=^#)|(?<=\s#))\w+(?=(?:$|\s))/)
+    tags = value.join(",").scan(/(?:(?<=^#)|(?<=\s#))\w+(?=$|\s)/)
 
     if tags.any?
       records.where("title ilike ?", "%#{search}%").tagged_with(tags, wild: true)
