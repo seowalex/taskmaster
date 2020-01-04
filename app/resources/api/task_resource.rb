@@ -2,6 +2,10 @@ class Api::TaskResource < JSONAPI::Resource
   attributes :title, :description, :completed, :priority, :order, :due_date, :tag_list
   before_update :reorder
 
+  filter :search, apply: ->(records, value, _options) {
+    records.tagged_with(value.join(',').scan(/(?:(?<=^#)|(?<=\s#))\w+(?=(?:$|\s))/))
+  }
+
   def self.records(options = {})
     context = options[:context]
     context[:current_user].tasks

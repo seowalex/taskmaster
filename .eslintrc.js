@@ -56,6 +56,11 @@ module.exports = {
       assert: 'either',
     }],
     'jsx-a11y/no-autofocus': ['off'],
+    'jsx-a11y/anchor-is-valid': ['error', {
+      components: ['Link'],
+      specialLink: ['to'],
+      aspects: ['noHref'],
+    }],
   },
   settings: {
     'import/extensions': ['.js', '.jsx', '.ts', '.tsx'],
