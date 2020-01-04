@@ -7,7 +7,7 @@ import styles from './navbar.module.scss';
 
 const Navbar: React.FunctionComponent = () => {
   const history = useHistory();
-  const { state, dispatch } = useContext(AuthContext);
+  const { auth, dispatchAuth } = useContext(AuthContext);
 
   const handleLogout = (e: MouseEvent<HTMLButtonElement>): void => {
     e.preventDefault();
@@ -15,10 +15,10 @@ const Navbar: React.FunctionComponent = () => {
     axios.delete('/api/logout', {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: state.token,
+        Authorization: auth.token,
       },
     }).then(() => {
-      dispatch({
+      dispatchAuth({
         type: 'logout',
       });
 
@@ -31,8 +31,8 @@ const Navbar: React.FunctionComponent = () => {
       <ul className="navbar-nav ml-auto">
         <li className="nav-item dropdown">
           <button type="button" className="btn btn-link nav-link dropdown-toggle" id="navbarDropdown" data-toggle="dropdown">
-            <img src={`https://api.adorable.io/avatars/300/${state.user!.email}@adorable.io.png`} alt="Profile" className={`${styles.profileImg} rounded-circle`} />
-            {state.user!.email}
+            <img src={`https://api.adorable.io/avatars/300/${auth.user!.email}@adorable.io.png`} alt="Profile" className={`${styles.profileImg} rounded-circle`} />
+            {auth.user!.email}
           </button>
           <div className="dropdown-menu dropdown-menu-right">
             <button type="button" className="dropdown-item">

@@ -11,16 +11,16 @@ interface AuthState {
 interface AuthAction {
   readonly type: string;
   readonly payload?: {
-    user: {
-      email: string;
+    readonly user: {
+      readonly email: string;
     };
-    token: string;
+    readonly token: string;
   };
 }
 
 interface AuthContext {
-  readonly state: AuthState;
-  readonly dispatch: Dispatch<AuthAction>;
+  readonly auth: AuthState;
+  readonly dispatchAuth: Dispatch<AuthAction>;
 }
 
 export const authInitialState = {
@@ -31,7 +31,7 @@ export const authInitialState = {
 
 export const authReducer: Reducer<AuthState, AuthAction> = (state, action) => {
   switch (action.type) {
-    case 'login':
+    case 'login': {
       localStorage.setItem('user', JSON.stringify(action.payload!.user));
       localStorage.setItem('token', action.payload!.token);
 
@@ -40,15 +40,17 @@ export const authReducer: Reducer<AuthState, AuthAction> = (state, action) => {
         user: action.payload!.user,
         token: action.payload!.token,
       };
+    }
 
-    case 'login_once':
+    case 'login_once': {
       return {
         isAuthenticated: true,
         user: action.payload!.user,
         token: action.payload!.token,
       };
+    }
 
-    case 'logout':
+    case 'logout': {
       localStorage.clear();
 
       return {
@@ -56,9 +58,11 @@ export const authReducer: Reducer<AuthState, AuthAction> = (state, action) => {
         user: null,
         token: null,
       };
+    }
 
-    default:
+    default: {
       return state;
+    }
   }
 };
 

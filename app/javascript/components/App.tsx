@@ -22,19 +22,19 @@ import {
 import './app.scss';
 
 const PrivateRoute: FunctionComponent<RouteProps> = ({ children, ...rest }) => {
-  const { state } = useContext(AuthContext);
+  const { auth } = useContext(AuthContext);
 
   if (localStorage.getItem('user') !== null) {
-    state.isAuthenticated = true;
-    state.user = JSON.parse(localStorage.getItem('user') as string);
-    state.token = localStorage.getItem('token');
+    auth.isAuthenticated = true;
+    auth.user = JSON.parse(localStorage.getItem('user') as string);
+    auth.token = localStorage.getItem('token');
   }
 
   return (
     <Route
       {...rest}
       render={({ location }): ReactNode => (
-        state.isAuthenticated ? (
+        auth.isAuthenticated ? (
           children
         ) : (
           <Redirect
@@ -50,19 +50,19 @@ const PrivateRoute: FunctionComponent<RouteProps> = ({ children, ...rest }) => {
 };
 
 const PublicRoute: FunctionComponent<RouteProps> = ({ children, ...rest }) => {
-  const { state } = useContext(AuthContext);
+  const { auth } = useContext(AuthContext);
 
   if (localStorage.getItem('user') !== null) {
-    state.isAuthenticated = true;
-    state.user = JSON.parse(localStorage.getItem('user') as string);
-    state.token = localStorage.getItem('token');
+    auth.isAuthenticated = true;
+    auth.user = JSON.parse(localStorage.getItem('user') as string);
+    auth.token = localStorage.getItem('token');
   }
 
   return (
     <Route
       {...rest}
       render={(): ReactNode => (
-        state.isAuthenticated ? (
+        auth.isAuthenticated ? (
           <Redirect to="/" />
         ) : (
           children
@@ -73,10 +73,10 @@ const PublicRoute: FunctionComponent<RouteProps> = ({ children, ...rest }) => {
 };
 
 const App: FunctionComponent = () => {
-  const [state, dispatch] = useReducer(authReducer, authInitialState);
+  const [auth, dispatchAuth] = useReducer(authReducer, authInitialState);
 
   return (
-    <AuthContext.Provider value={{ state, dispatch }}>
+    <AuthContext.Provider value={{ auth, dispatchAuth }}>
       <Router>
         <Switch>
           <PrivateRoute exact path="/">

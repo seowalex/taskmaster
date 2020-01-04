@@ -15,8 +15,8 @@ const Login: FunctionComponent = () => {
   const history = useHistory();
   const location = useLocation();
   const { from } = location.state || { from: { pathname: '/' } };
-  const { dispatch } = useContext(AuthContext);
-  const [auth, setAuth] = useState({
+  const { dispatchAuth } = useContext(AuthContext);
+  const [request, setRequest] = useState({
     isAuthorised: true,
     isLoading: false,
     error: '',
@@ -39,8 +39,8 @@ const Login: FunctionComponent = () => {
   const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
 
-    setAuth({
-      ...auth,
+    setRequest({
+      ...request,
       isLoading: true,
     });
 
@@ -52,7 +52,7 @@ const Login: FunctionComponent = () => {
     }, {
       headers: { 'Content-Type': 'application/json' },
     }).then((response) => {
-      dispatch({
+      dispatchAuth({
         type: data.remember ? 'login' : 'login_once',
         payload: {
           user: {
@@ -64,7 +64,7 @@ const Login: FunctionComponent = () => {
 
       history.replace(from);
     }).catch((error) => {
-      setAuth({
+      setRequest({
         isAuthorised: false,
         isLoading: false,
         error: error.response.data.error,
@@ -83,16 +83,16 @@ const Login: FunctionComponent = () => {
             <h1 className="display-4 text-center mb-5">Taskmaster</h1>
 
             <div className={`form-group ${styles.formLabelGroup}`}>
-              <input type="email" id="inputEmail" className={`form-control ${auth.isAuthorised ? '' : 'is-invalid'}`} placeholder="Email address" name="email" value={data.email} onChange={handleChange} required autoFocus />
+              <input type="email" id="inputEmail" className={`form-control ${request.isAuthorised ? '' : 'is-invalid'}`} placeholder="Email address" name="email" value={data.email} onChange={handleChange} required autoFocus />
               <label htmlFor="inputEmail">Email address</label>
             </div>
 
             <div className={`form-group ${styles.formLabelGroup}`}>
-              <input type="password" id="inputPassword" className={`form-control ${auth.isAuthorised ? '' : 'is-invalid'}`} placeholder="Password" name="password" value={data.password} onChange={handleChange} required />
+              <input type="password" id="inputPassword" className={`form-control ${request.isAuthorised ? '' : 'is-invalid'}`} placeholder="Password" name="password" value={data.password} onChange={handleChange} required />
               <div className="invalid-feedback">
-                {auth.error}
+                {request.error}
               </div>
-              <label htmlFor="inputEmail">Password</label>
+              <label htmlFor="inputPassword">Password</label>
             </div>
 
             <div className="form-group custom-control custom-checkbox">
@@ -100,7 +100,7 @@ const Login: FunctionComponent = () => {
               <label className="custom-control-label" htmlFor="inputRemember">Remember me</label>
             </div>
             <button className="btn btn-lg btn-primary btn-block" type="submit">
-              {auth.isLoading ? <FontAwesomeIcon icon="circle-notch" spin /> : 'Log in'}
+              {request.isLoading ? <FontAwesomeIcon icon="circle-notch" spin /> : 'Log in'}
             </button>
           </form>
         </div>
