@@ -1,9 +1,9 @@
 import React, {
   useEffect,
   useContext,
-  useReducer,
   FormEvent,
 } from 'react';
+import { ReactSortable, SortableEvent } from 'react-sortablejs';
 import { Helmet } from 'react-helmet';
 import axios from 'axios';
 import { AuthContext } from 'contexts/AuthContext';
@@ -21,7 +21,7 @@ interface Task {
     description: string;
     completed: boolean;
     priority: number;
-    position: number;
+    order: number;
     'due-date': string;
     'tag-list': string[];
   };
@@ -39,44 +39,31 @@ type TaskAction = {
 };
 
 const Home: React.FunctionComponent = () => {
-  const [tasks, dipatchTasks] = useReducer((state: Task[], action: TaskAction) => {
-    switch (action.type) {
-      case 'all': {
-        return action.payload;
-      }
-
-      case 'one': {
-        const changedTask = state.find((task: Task) => task.id === action.payload.id);
-
-        if (changedTask) {
-          changedTask.attributes.completed = action.payload.completed;
-        }
-
-        return [...state];
-      }
-
-      default: {
-        return state;
-      }
-    }
-  }, []);
+  const [tasks, setTasks] = React.useState();
   const { auth } = useContext(AuthContext);
 
   useEffect(() => {
     axios.get('/api/tasks', {
+      params: {
+        sort: 'order',
+      },
       headers: {
         Authorization: auth.token,
       },
     }).then((response) => {
-      dipatchTasks({
-        type: 'all',
-        payload: response.data.data,
-      });
+      setTasks(response.data.data);
     });
   }, [auth]);
 
   const handleChange = (e: FormEvent<HTMLInputElement>): void => {
     const target = e.target as HTMLInputElement;
+    console.log({
+      id: target.id,
+      type: 'tasks',
+      attributes: {
+        completed: target.checked,
+      },
+    });
 
     axios.patch(`/api/tasks/${target.id}`, {
       data: {
@@ -92,13 +79,30 @@ const Home: React.FunctionComponent = () => {
         Authorization: auth.token,
       },
     }).then((response) => {
-      dipatchTasks({
-        type: 'one',
-        payload: {
-          id: response.data.data.id,
-          completed: response.data.data.attributes.completed,
+      const changedTask = tasks.find((task: Task) => task.id === response.data.data.id);
+
+      if (changedTask) {
+        changedTask.attributes.completed = response.data.data.attributes.completed;
+      }
+
+      setTasks([...tasks]);
+    });
+  };
+
+  const handleSort = (e: SortableEvent): void => {
+    axios.patch(`/api/tasks/${e.item.getAttribute('data-id')}`, {
+      data: {
+        id: e.item.getAttribute('data-id'),
+        type: 'tasks',
+        attributes: {
+          order: e.newIndex as number + 1,
         },
-      });
+      },
+    }, {
+      headers: {
+        'Content-Type': 'application/vnd.api+json',
+        Authorization: auth.token,
+      },
     });
   };
 
@@ -114,28 +118,40 @@ const Home: React.FunctionComponent = () => {
             <input type="text" className="form-control" id="todoInput" placeholder="Add task and press Enter to save." />
           </div>
         </form>
-        <ul className="list-group">
-          {tasks.length ? tasks.map((task: Task) => (
-            <li className="list-group-item d-flex align-items-center" key={task.id}>
-              <div className={`custom-control custom-checkbox ${styles.taskCheckbox}`}>
-                <input type="checkbox" className="custom-control-input" id={task.id} name={task.id} checked={task.attributes.completed} onChange={handleChange} />
-                <label className="custom-control-label" htmlFor={task.id}>{task.attributes.title}</label>
-              </div>
-              <div className="ml-auto">
-                {task.attributes['tag-list'].map((tag: string) => (
-                  <span className="badge badge-secondary ml-1" key={tag}>
-                    #
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </li>
-          )) : (
-            <li className="list-group-item d-flex align-items-center">
-              Loading...
-            </li>
-          )}
-        </ul>
+        {tasks ? (
+          <ReactSortable
+            tag="ul"
+            className="list-group"
+            list={tasks}
+            setList={setTasks}
+            onSort={handleSort}
+          >
+            {tasks.map((task: Task) => (
+              <li className="list-group-item d-flex align-items-center" key={task.id}>
+                <div className={`custom-control custom-checkbox ${styles.taskCheckbox}`}>
+                  <input type="checkbox" className="custom-control-input" id={task.id} name={task.id} checked={task.attributes.completed} onChange={handleChange} />
+                  <label className="custom-control-label" htmlFor={task.id}>
+                    {task.attributes.order}
+                    &nbsp;
+                    {task.attributes.title}
+                  </label>
+                </div>
+                <div className="ml-auto">
+                  {task.attributes['tag-list'].map((tag: string) => (
+                    <span className="badge badge-secondary ml-1" key={tag}>
+                      #
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </li>
+            ))}
+          </ReactSortable>
+        ) : (
+          <li className="list-group-item d-flex align-items-center">
+            Loading...
+          </li>
+        )}
       </div>
     </>
   );
