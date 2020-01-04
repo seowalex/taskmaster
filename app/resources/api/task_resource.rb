@@ -3,7 +3,14 @@ class Api::TaskResource < JSONAPI::Resource
   before_update :reorder
 
   filter :search, apply: ->(records, value, _options) {
-    records.tagged_with(value.join(',').scan(/(?:(?<=^#)|(?<=\s#))\w+(?=(?:$|\s))/))
+    search = value.join(",").split(" ").select{ |word| word[0] != "#" }.join(" ")
+    tags = value.join(",").scan(/(?:(?<=^#)|(?<=\s#))\w+(?=(?:$|\s))/)
+
+    if tags.any?
+      records.where("title ilike ?", "%#{search}%").tagged_with(tags, wild: true)
+    else
+      records.where("title ilike ?", "%#{search}%")
+    end
   }
 
   def self.records(options = {})
