@@ -1,3 +1,15 @@
 .fas, .svg-inline--fa {
   margin-right: 8px;
 }
+
+.Toastify__toast--error {
+  color: #721c24;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 0.25rem;
+  padding: 0.75rem 1.25rem;
+
+  @media only screen and (max-width: 480px) {
+    border-radius: 0;
+  }
+}

@@ -11,6 +11,7 @@ import {
   Redirect,
   RouteProps,
 } from 'react-router-dom';
+import { toast, Slide } from 'react-toastify';
 import Home from 'components/Home';
 import Task from 'components/Task';
 import Login from 'components/Login';
@@ -21,6 +22,13 @@ import {
   authInitialState,
 } from 'contexts/AuthContext';
 import './app.scss';
+
+toast.configure({
+  position: toast.POSITION.TOP_CENTER,
+  closeButton: false,
+  transition: Slide,
+  hideProgressBar: true,
+});
 
 const PrivateRoute: FunctionComponent<RouteProps> = ({ children, ...rest }) => {
   const { auth } = useContext(AuthContext);

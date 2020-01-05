@@ -6,6 +6,7 @@ import React, {
 } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
+import { toast } from 'react-toastify';
 import axios from 'axios';
 import { AuthContext } from 'contexts/AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -19,7 +20,6 @@ const Login: FunctionComponent = () => {
   const [request, setRequest] = useState({
     isAuthorised: true,
     isLoading: false,
-    error: '',
   });
   const [data, setData] = useState({
     email: '',
@@ -72,7 +72,11 @@ const Login: FunctionComponent = () => {
       setRequest({
         isAuthorised: false,
         isLoading: false,
-        error: error.response.data.error,
+      });
+
+      toast(error.response.data.error, {
+        type: 'error',
+        toastId: 'loginError',
       });
     });
   };
@@ -94,9 +98,6 @@ const Login: FunctionComponent = () => {
 
             <div className={`form-group ${styles.formLabelGroup}`}>
               <input type="password" id="inputPassword" className={`form-control ${request.isAuthorised ? '' : 'is-invalid'}`} placeholder="Password" name="password" value={data.password} onChange={handleChange} required />
-              <div className="invalid-feedback">
-                {request.error}
-              </div>
               <label htmlFor="inputPassword">Password</label>
             </div>
 

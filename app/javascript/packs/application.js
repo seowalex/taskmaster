@@ -1,6 +1,8 @@
 import 'bootstrap/dist/js/bootstrap';
 import 'bootstrap/scss/bootstrap.scss';
 
+import 'react-toastify/scss/main.scss';
+
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 
