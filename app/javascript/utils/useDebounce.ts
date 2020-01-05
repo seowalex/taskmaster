@@ -11,8 +11,7 @@ const useDebounce = (value: ComponentState, delay: number): ComponentState => {
     return (): void => {
       clearTimeout(handler);
     };
-  },
-  [value]);
+  }, [value]);
 
   return debouncedValue;
 };

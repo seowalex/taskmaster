@@ -55,6 +55,7 @@ gem 'react-rails', '~> 2.6'
 
 gem 'faker'
 gem 'jsonapi-resources'
+gem 'acts_as_list'
 gem 'acts-as-taggable-on'
 
 gem 'devise'

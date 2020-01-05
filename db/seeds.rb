@@ -10,11 +10,9 @@
 @bob = User.create(email: 'bob@example.com', password: 'password')
 
 20.times do
-  @alice.tasks.create(title: Faker::Books::Lovecraft.sentence.delete_suffix('.'), description: Faker::Books::Lovecraft.paragraph, completed: Faker::Boolean.boolean, priority: Faker::Number.within(range: 1..3), order: Faker::Number.unique.within(range: 1..20), due_date: Faker::Date.in_date_period, tag_list: Faker::Books::Lovecraft.words)
+  @alice.tasks.create(title: Faker::Books::Lovecraft.sentence.delete_suffix('.'), description: Faker::Books::Lovecraft.paragraph, completed: Faker::Boolean.boolean, priority: Faker::Number.within(range: 1..3), due_date: Faker::Date.in_date_period, tag_list: Faker::Books::Lovecraft.words)
 end
 
-Faker::Number.unique.clear
-
 20.times do
-  @bob.tasks.create(title: Faker::Books::Lovecraft.sentence.delete_suffix('.'), description: Faker::Books::Lovecraft.paragraph, completed: Faker::Boolean.boolean, priority: Faker::Number.within(range: 1..3), order: Faker::Number.unique.within(range: 1..20), due_date: Faker::Date.in_date_period, tag_list: Faker::Books::Lovecraft.words)
+  @bob.tasks.create(title: Faker::Books::Lovecraft.sentence.delete_suffix('.'), description: Faker::Books::Lovecraft.paragraph, completed: Faker::Boolean.boolean, priority: Faker::Number.within(range: 1..3), due_date: Faker::Date.in_date_period, tag_list: Faker::Books::Lovecraft.words)
 end

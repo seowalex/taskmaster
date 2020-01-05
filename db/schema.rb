@@ -47,7 +47,7 @@ ActiveRecord::Schema.define(version: 2020_01_01_094837) do
     t.text "description"
     t.boolean "completed"
     t.integer "priority"
-    t.integer "order"
+    t.integer "position"
     t.date "due_date"
     t.bigint "user_id", null: false
     t.datetime "created_at", precision: 6, null: false
