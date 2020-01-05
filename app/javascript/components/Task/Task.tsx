@@ -6,6 +6,7 @@ import React, {
   ChangeEvent,
   MouseEvent,
   KeyboardEvent,
+  FocusEvent,
 } from 'react';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
@@ -67,13 +68,17 @@ const Task: FunctionComponent = () => {
     }
   }, [useDebounce(task, 500)]);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement> | ContentEditableEvent): void => {
-    const target = e.target as HTMLInputElement;
+  useEffect(() => {
+    if (document.querySelectorAll('[data-tag=""]').length) {
+      (document.querySelectorAll('[data-tag=""]')[0].firstChild as HTMLElement).focus();
+    }
+  }, [task]);
 
-    if (e.nativeEvent.type === 'click') {
-      task.attributes.completed = target.checked;
+  const handleChange = (e: ChangeEvent<HTMLInputElement> | ContentEditableEvent): void => {
+    if (e.currentTarget.type === 'checkbox') {
+      task.attributes.completed = e.currentTarget.checked;
     } else {
-      task.attributes[e.currentTarget.getAttribute('id')] = target.value;
+      task.attributes[e.currentTarget.getAttribute('id')] = e.target.value;
     }
 
     setTask({ ...task });
@@ -84,10 +89,21 @@ const Task: FunctionComponent = () => {
     setTask({ ...task });
   };
 
-  const handleEnter = (e: KeyboardEvent): void => {
+  const handleTagKeyDown = (e: KeyboardEvent): void => {
     if (e.key === 'Enter') {
       e.preventDefault();
-      (e.target as HTMLElement).blur();
+      (e.currentTarget as HTMLElement).blur();
+    } else if ((e.key === 'Tab' || e.key === ' ') && e.currentTarget.textContent !== '') {
+      e.preventDefault();
+      task.attributes['tag-list'].push('');
+      setTask({ ...task });
+    }
+  };
+
+  const handleTagBlur = (e: FocusEvent<HTMLSpanElement>): void => {
+    if (e.currentTarget.textContent === '') {
+      task.attributes['tag-list'] = task.attributes['tag-list'].filter((tag: string) => tag !== '');
+      setTask({ ...task });
     }
   };
 
@@ -98,7 +114,13 @@ const Task: FunctionComponent = () => {
   };
 
   const handleEditTag = (e: ContentEditableEvent): void => {
-    task.attributes['tag-list'][task.attributes['tag-list'].findIndex((tag: string) => tag === e.currentTarget.parentElement.getAttribute('data-tag'))] = e.target.value;
+    const tags = [];
+
+    for (const tag of e.currentTarget.parentNode.parentNode.childNodes) {
+      tags.push(tag.textContent.replace(/[\s|\u00a0)]+/g, ''));
+    }
+
+    task.attributes['tag-list'] = tags;
     setTask({ ...task });
   };
 
@@ -137,12 +159,14 @@ const Task: FunctionComponent = () => {
                 <ContentEditable className={`${styles.taskTitle} ${task.attributes.completed ? 'text-muted' : ''}`} id="title" tagName="h1" html={task.attributes.title} onChange={handleChange} />
                 <hr />
                 <ContentEditable className={`${styles.taskDescription} ${task.attributes.completed ? 'text-muted' : ''}`} id="description" tagName="p" html={task.attributes.description} onChange={handleChange} />
-                {task.attributes['tag-list'].map((tag: string) => (
-                  <span className={`badge ${styles.taskTag} ${task.attributes.completed ? 'badge-secondary' : 'badge-dark'}`} data-tag={tag} key={tag}>
-                    <ContentEditable tagName="span" html={tag} onChange={handleEditTag} onKeyDown={handleEnter} />
-                    <FontAwesomeIcon icon="times" className={styles.removeTag} onClick={handleRemoveTag} />
-                  </span>
-                ))}
+                <span>
+                  {task.attributes['tag-list'].map((tag: string, index: number) => (
+                    <span className={`badge ${styles.taskTag} ${task.attributes.completed ? 'badge-secondary' : 'badge-dark'}`} data-tag={tag} key={index}>
+                      <ContentEditable tagName="span" html={tag} onChange={handleEditTag} onKeyDown={handleTagKeyDown} onBlur={handleTagBlur} />
+                      <FontAwesomeIcon icon="times" className={styles.removeTag} onClick={handleRemoveTag} />
+                    </span>
+                  ))}
+                </span>
                 <a href="#" className={`badge ${task.attributes.completed ? 'badge-secondary' : 'badge-dark'}`} onClick={handleAddTag}>
                   <FontAwesomeIcon icon="plus" />
                 </a>

@@ -73,9 +73,7 @@ const Home: FunctionComponent = () => {
   }, [auth, useDebounce(search, 500)]);
 
   const handleSearch = (e: FormEvent<HTMLInputElement>): void => {
-    const target = e.target as HTMLInputElement;
-
-    setSearch(target.value);
+    setSearch(e.currentTarget.value);
   };
 
   const handleSort = (e: SortableEvent): void => {
@@ -101,14 +99,12 @@ const Home: FunctionComponent = () => {
   };
 
   const handleChange = (e: FormEvent<HTMLInputElement>): void => {
-    const target = e.target as HTMLInputElement;
-
-    axios.patch(`/api/tasks/${target.id}`, {
+    axios.patch(`/api/tasks/${e.currentTarget.id}`, {
       data: {
-        id: target.id,
+        id: e.currentTarget.id,
         type: 'tasks',
         attributes: {
-          completed: target.checked,
+          completed: e.currentTarget.checked,
         },
       },
     }, {
@@ -135,7 +131,7 @@ const Home: FunctionComponent = () => {
   const handleTagClick = (e: MouseEvent): void => {
     e.preventDefault();
 
-    setSearch(`${search} #${(e.target as Element).getAttribute('data-tag') as string}`.trim());
+    setSearch(`${search} #${e.currentTarget.getAttribute('data-tag') as string}`.trim());
   };
 
   return (

@@ -28,11 +28,9 @@ const Login: FunctionComponent = () => {
   });
 
   const handleChange = (e: FormEvent<HTMLInputElement>): void => {
-    const target = e.target as HTMLInputElement;
-
     setData({
       ...data,
-      [target.name]: target.type === 'checkbox' ? target.checked : target.value,
+      [e.currentTarget.name]: e.currentTarget.type === 'checkbox' ? e.currentTarget.checked : e.currentTarget.value,
     });
 
     setRequest({

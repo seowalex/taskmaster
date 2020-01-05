@@ -30,6 +30,7 @@ module.exports = {
         'props': false
       }
     ],
+    'no-restricted-syntax': ['off'],
     'import/extensions': [
       'error',
       'always',
@@ -52,6 +53,7 @@ module.exports = {
     'react/prop-types': ['error', {
       skipUndeclared: true,
     }],
+    'react/no-array-index-key': ['off'],
     'jsx-a11y/label-has-associated-control': ['off'],
     'jsx-a11y/no-autofocus': ['off'],
     'jsx-a11y/anchor-is-valid': ['error', {
