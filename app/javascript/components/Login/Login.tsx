@@ -67,6 +67,8 @@ const Login: FunctionComponent = () => {
         },
       });
 
+      toast.dismiss('loginError');
+
       history.replace(from);
     }).catch((error) => {
       setRequest({

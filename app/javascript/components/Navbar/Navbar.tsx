@@ -1,5 +1,6 @@
 import React, { useContext, MouseEvent } from 'react';
 import { useHistory } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import axios from 'axios';
 import { AuthContext } from 'contexts/AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -23,6 +24,11 @@ const Navbar: React.FunctionComponent = () => {
       });
 
       history.push('/');
+    }).catch((error) => {
+      toast(error.response.data.error, {
+        type: 'error',
+        toastId: 'logoutError',
+      });
     });
   };
 

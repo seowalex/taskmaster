@@ -7,6 +7,7 @@ import React, {
 } from 'react';
 import { ReactSortable, SortableEvent } from 'react-sortablejs';
 import { Helmet } from 'react-helmet';
+import { toast } from 'react-toastify';
 import axios from 'axios';
 import useDebounce from 'utils/useDebounce';
 import { AuthContext } from 'contexts/AuthContext';
@@ -38,7 +39,7 @@ interface SearchParams {
 const Home: React.FunctionComponent = () => {
   const [tasks, setTasks] = useState();
   const [search, setSearch] = useState('');
-  const { auth } = useContext(AuthContext);
+  const { auth, dispatchAuth } = useContext(AuthContext);
 
   useEffect(() => {
     const params: SearchParams = {
@@ -56,6 +57,17 @@ const Home: React.FunctionComponent = () => {
       },
     }).then((response) => {
       setTasks(response.data.data);
+    }).catch((error) => {
+      if (error.response.status === 401) {
+        dispatchAuth({
+          type: 'logout',
+        });
+      } else {
+        toast(error.response.data.error, {
+          type: 'error',
+          toastId: 'loginError',
+        });
+      }
     });
   }, [auth, useDebounce(search, 500)]);
 
@@ -79,6 +91,11 @@ const Home: React.FunctionComponent = () => {
         'Content-Type': 'application/vnd.api+json',
         Authorization: auth.token,
       },
+    }).catch((error) => {
+      toast(error.response.data.error, {
+        type: 'error',
+        toastId: 'sortError',
+      });
     });
   };
 
@@ -106,6 +123,11 @@ const Home: React.FunctionComponent = () => {
       }
 
       setTasks([...tasks]);
+    }).catch((error) => {
+      toast(error.response.data.error, {
+        type: 'error',
+        toastId: 'changeError',
+      });
     });
   };
 

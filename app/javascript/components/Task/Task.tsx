@@ -6,6 +6,7 @@ import React, {
 } from 'react';
 import { useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
+import { toast } from 'react-toastify';
 import ContentEditable from 'react-contenteditable';
 import axios from 'axios';
 import { AuthContext } from 'contexts/AuthContext';
@@ -46,6 +47,11 @@ const Task: React.FunctionComponent = () => {
         'Content-Type': 'application/vnd.api+json',
         Authorization: auth.token,
       },
+    }).catch((error) => {
+      toast(error.response.data.error, {
+        type: 'error',
+        toastId: 'changeError',
+      });
     });
   };
 
