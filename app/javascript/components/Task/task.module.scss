@@ -86,6 +86,10 @@
 
     :global(.DayPickerInput-OverlayWrapper) {
       margin-left: -30px;
+
+      :global(.DayPicker-Footer) {
+        text-align: center;
+      }
     }
   }
 }

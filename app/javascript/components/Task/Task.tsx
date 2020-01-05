@@ -12,6 +12,7 @@ import { Link, useHistory, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { toast } from 'react-toastify';
 import Select from 'react-select';
+import { DayModifiers } from 'react-day-picker';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 import ContentEditable, { ContentEditableEvent } from 'react-contenteditable';
 import axios from 'axios';
@@ -49,10 +50,12 @@ const Task: FunctionComponent = () => {
       ...provided,
       border: 'none',
       boxShadow: 'none',
+      cursor: 'pointer',
     }),
     option: (provided: any, state: any): any => ({
       ...provided,
       color: state.data.color,
+      cursor: 'pointer',
     }),
     valueContainer: (provided: any): any => ({
       ...provided,
@@ -138,6 +141,12 @@ const Task: FunctionComponent = () => {
     setTask({ ...task });
   };
 
+  // TODO: https://github.com/gpbl/react-day-picker/issues/955
+  const handleDayClear = (): void => {
+    task.attributes['due-date'] = null;
+    setTask({ ...task });
+  };
+
   const handlePriorityChange = (e: any): void => {
     task.attributes.priority = e.value;
     setTask({ ...task });
@@ -206,9 +215,14 @@ const Task: FunctionComponent = () => {
                   <div className={`${styles.taskDueDate} ${task.attributes.completed ? 'text-muted' : ''}`}>
                     <FontAwesomeIcon icon="calendar-alt" className="mr-2" />
                     <DayPickerInput
-                      value={moment(task.attributes['due-date']).calendar()}
+                      value={task.attributes['due-date'] ? moment(task.attributes['due-date']).calendar() : ''}
                       onDayChange={handleDayChange}
                       inputProps={{ readOnly: true }}
+                      placeholder="No due date"
+                      dayPickerProps={{
+                        todayButton: 'Clear',
+                        onTodayButtonClick: handleDayClear,
+                      }}
                     />
                   </div>
                   <Select
