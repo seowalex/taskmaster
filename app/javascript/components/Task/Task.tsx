@@ -205,7 +205,11 @@ const Task: FunctionComponent = () => {
                   </div>
                   <div className={`${styles.taskDueDate} ${task.attributes.completed ? 'text-muted' : ''}`}>
                     <FontAwesomeIcon icon="calendar-alt" className="mr-2" />
-                    <DayPickerInput value={moment(task.attributes['due-date']).calendar()} onDayChange={handleDayChange} inputProps={{ readOnly: true }} />
+                    <DayPickerInput
+                      value={moment(task.attributes['due-date']).calendar()}
+                      onDayChange={handleDayChange}
+                      inputProps={{ readOnly: true }}
+                    />
                   </div>
                   <Select
                     value={priorityOptions[task.attributes.priority - 1]}
@@ -218,13 +222,33 @@ const Task: FunctionComponent = () => {
                   />
                 </div>
                 <hr />
-                <ContentEditable className={`${styles.taskTitle} ${task.attributes.completed ? 'text-muted' : ''}`} id="title" tagName="h1" html={task.attributes.title} onChange={handleChange} />
+                <ContentEditable
+                  className={`${styles.taskTitle} ${task.attributes.completed ? 'text-muted' : ''}`}
+                  id="title"
+                  tagName="h1"
+                  placeholder="What needs doing?"
+                  html={task.attributes.title}
+                  onChange={handleChange}
+                />
                 <hr />
-                <ContentEditable className={`${styles.taskDescription} ${task.attributes.completed ? 'text-muted' : ''}`} id="description" tagName="p" html={task.attributes.description} onChange={handleChange} />
+                <ContentEditable
+                  className={`${styles.taskDescription} ${task.attributes.completed ? 'text-muted' : ''}`}
+                  id="description"
+                  tagName="p"
+                  placeholder="Description"
+                  html={task.attributes.description}
+                  onChange={handleChange}
+                />
                 <span>
                   {task.attributes['tag-list'].map((tag: string, index: number) => (
                     <span className={`badge ${styles.taskTag} ${task.attributes.completed ? 'badge-secondary' : 'badge-dark'}`} data-tag={tag} key={index}>
-                      <ContentEditable tagName="span" html={tag} onChange={handleEditTag} onKeyDown={handleTagKeyDown} onBlur={handleTagBlur} />
+                      <ContentEditable
+                        tagName="span"
+                        html={tag}
+                        onChange={handleEditTag}
+                        onKeyDown={handleTagKeyDown}
+                        onBlur={handleTagBlur}
+                      />
                       <FontAwesomeIcon icon="times" className={styles.removeTag} onClick={handleRemoveTag} />
                     </span>
                   ))}

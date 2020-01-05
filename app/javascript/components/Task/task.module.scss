@@ -93,6 +93,12 @@
 .taskTitle, .taskDescription {
   font-weight: 300;
 
+  &:empty::before {
+    content: attr(placeholder);
+    color: #adb5bd;
+    cursor: text;
+  }
+
   &:global(.text-muted) {
     text-decoration: line-through;
   }
