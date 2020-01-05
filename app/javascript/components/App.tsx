@@ -12,6 +12,7 @@ import {
   RouteProps,
 } from 'react-router-dom';
 import { toast, Slide } from 'react-toastify';
+import moment from 'moment';
 import Home from 'components/Home';
 import Task from 'components/Task';
 import Login from 'components/Login';
@@ -28,6 +29,16 @@ toast.configure({
   closeButton: false,
   transition: Slide,
   hideProgressBar: true,
+});
+moment.updateLocale('en-GB', {
+  calendar: {
+    sameDay: '[Today]',
+    nextDay: '[Tomorrow]',
+    lastDay: '[Yesterday]',
+    nextWeek: 'dddd',
+    lastWeek: '[Last] dddd',
+    sameElse: 'DD/MM/YYYY',
+  },
 });
 
 const PrivateRoute: FunctionComponent<RouteProps> = ({ children, ...rest }) => {

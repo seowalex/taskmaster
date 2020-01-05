@@ -1,4 +1,4 @@
-import React, { useContext, MouseEvent } from 'react';
+import React, { FunctionComponent, useContext, MouseEvent } from 'react';
 import { useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import axios from 'axios';
@@ -6,7 +6,12 @@ import { AuthContext } from 'contexts/AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styles from './navbar.module.scss';
 
-const Navbar: React.FunctionComponent = () => {
+interface NavbarProps {
+  className?: string;
+}
+
+const Navbar: FunctionComponent<NavbarProps> = (props) => {
+  const { className, children } = props;
   const history = useHistory();
   const { auth, dispatchAuth } = useContext(AuthContext);
 
@@ -33,25 +38,26 @@ const Navbar: React.FunctionComponent = () => {
   };
 
   return (
-    <nav className={`navbar sticky-top navbar-expand navbar-light ${styles.navbar}`}>
+    <nav className={`navbar sticky-top navbar-expand navbar-light ${styles.navbar} ${className}`}>
+      { children }
       <ul className="navbar-nav ml-auto">
-        <li className="nav-item dropdown">
+        <li className={`nav-item dropdown ${styles.profileDropdown}`}>
           <button type="button" className="btn btn-link nav-link dropdown-toggle" id="navbarDropdown" data-toggle="dropdown">
             <img src={`https://api.adorable.io/avatars/300/${auth.user!.email}@adorable.io.png`} alt="Profile" className={`${styles.profileImg} rounded-circle`} />
             {auth.user!.email}
           </button>
           <div className="dropdown-menu dropdown-menu-right">
             <button type="button" className="dropdown-item">
-              <FontAwesomeIcon icon="user" />
+              <FontAwesomeIcon icon="user" className="mr-2" />
               Profile
             </button>
             <button type="button" className="dropdown-item">
-              <FontAwesomeIcon icon="cog" />
+              <FontAwesomeIcon icon="cog" className="mr-2" />
               Settings
             </button>
             <div className="dropdown-divider" />
             <button type="button" className="dropdown-item" onClick={handleLogout}>
-              <FontAwesomeIcon icon="sign-out-alt" />
+              <FontAwesomeIcon icon="sign-out-alt" className="mr-2" />
               Logout
             </button>
           </div>

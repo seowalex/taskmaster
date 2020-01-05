@@ -1,13 +1,37 @@
+.taskNavbar {
+  margin-left: -1rem;
+  margin-right: -1rem;
+}
+
+.back {
+  pointer-events: auto;
+  font-size: 2rem;
+  margin: 0 1rem;
+  color: #343a40;
+  box-shadow: 0px 0px 10px #ffffff;
+  background-color: rgba(255, 255, 255, 0.4);
+
+  &:hover {
+    color: #121416;
+  }
+}
+
 .taskCheckbox {
   min-height: 2rem;
   padding-left: 2.5rem;
   padding-right: 1rem;
   border-right: 1px solid rgba(0, 0, 0, 0.1);
+  cursor: pointer;
 
   :global(.text-muted) {
     text-decoration: line-through;
   }
+
   :global(.custom-control-input) {
+    ~ :global(.custom-control-label)::before, ~ :global(.custom-control-label)::after {
+      cursor: pointer;
+    }
+
     &:checked ~ :global(.custom-control-label)::before {
       background-color: #6c757d;
       border-color: #6c757d;
@@ -36,7 +60,34 @@
   }
 }
 
+.taskDueDate {
+  display: flex;
+  flex-grow: 1;
+  padding: 0 1rem;
+
+  :global(.svg-inline--fa) {
+    align-self: center;
+  }
+  
+  :global(.DayPickerInput) {
+    flex-grow: 1;
+
+    input {
+      cursor: pointer;
+      border: none;
+      outline: none;
+      width: 100%;
+    }
+
+    :global(.DayPickerInput-OverlayWrapper) {
+      margin-left: -30px;
+    }
+  }
+}
+
 .taskTitle, .taskDescription {
+  font-weight: 300;
+
   &:global(.text-muted) {
     text-decoration: line-through;
   }
@@ -44,4 +95,25 @@
   &:focus {
     outline: 0px solid transparent;
   }
+}
+
+.taskDescription {
+  font-size: 1.25rem;
+}
+
+.taskTag {
+  margin-right: 0.25rem;
+
+  & span:focus {
+    outline: 0px solid transparent;
+  }
+
+  &::before {
+    content: '#';
+  }
+}
+
+.removeTag {
+  margin-left: 0.5rem;
+  cursor: pointer;
 }

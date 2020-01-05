@@ -1,7 +1,7 @@
-import * as React from 'react';
+import React, { FunctionComponent } from 'react';
 import { Helmet } from 'react-helmet';
 
-const Error: React.FunctionComponent = () => (
+const Error: FunctionComponent = () => (
   <>
     <Helmet>
       <title>404 Not Found</title>

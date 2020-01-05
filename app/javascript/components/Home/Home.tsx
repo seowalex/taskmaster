@@ -1,4 +1,5 @@
 import React, {
+  FunctionComponent,
   useState,
   useEffect,
   useContext,
@@ -36,7 +37,7 @@ interface SearchParams {
   'filter[search]'?: string;
 }
 
-const Home: React.FunctionComponent = () => {
+const Home: FunctionComponent = () => {
   const [tasks, setTasks] = useState();
   const [search, setSearch] = useState('');
   const { auth, dispatchAuth } = useContext(AuthContext);
