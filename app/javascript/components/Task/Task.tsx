@@ -11,6 +11,7 @@ import React, {
 import { Link, useHistory, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { toast } from 'react-toastify';
+import Select from 'react-select';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 import ContentEditable, { ContentEditableEvent } from 'react-contenteditable';
 import axios from 'axios';
@@ -26,6 +27,54 @@ const Task: FunctionComponent = () => {
   const { id } = useParams();
   const [task, setTask] = useState();
   const { auth } = useContext(AuthContext);
+
+  const priorityOptions = [
+    { value: '1', label: '!!!', color: '#dc3545' },
+    { value: '2', label: '!!', color: '#ffc107' },
+    { value: '3', label: '!', color: '#17a2b8' },
+  ];
+  const priorityComponents = {
+    DropdownIndicator: (): null => null,
+    IndicatorSeparator: (): null => null,
+  };
+  const priorityStyles = {
+    container: (provided: any): any => ({
+      ...provided,
+      width: 44,
+      fontSize: '1.2rem',
+      textAlign: 'center',
+      fontWeight: 'bold',
+    }),
+    control: (provided: any): any => ({
+      ...provided,
+      border: 'none',
+      boxShadow: 'none',
+    }),
+    option: (provided: any, state: any): any => ({
+      ...provided,
+      color: state.data.color,
+    }),
+    valueContainer: (provided: any): any => ({
+      ...provided,
+      justifyContent: 'center',
+    }),
+    singleValue: (provided: any, state: any): any => ({
+      ...provided,
+      margin: 0,
+      color: task.attributes.completed ? '#6c757d' : state.data.color,
+      textDecoration: task.attributes.completed ? 'line-through' : '',
+    }),
+  };
+  const priorityTheme = (theme: any): any => ({
+    ...theme,
+    border: 'none',
+    colors: {
+      ...theme.colors,
+      primary: '#dee2e6',
+      primary50: '#e9ecef',
+      primary25: '#f8f9fa',
+    },
+  });
 
   useEffect(() => {
     axios.get(`/api/tasks/${id}`, {
@@ -89,6 +138,11 @@ const Task: FunctionComponent = () => {
     setTask({ ...task });
   };
 
+  const handlePriorityChange = (e: any): void => {
+    task.attributes.priority = e.value;
+    setTask({ ...task });
+  };
+
   const handleTagKeyDown = (e: KeyboardEvent): void => {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -149,11 +203,19 @@ const Task: FunctionComponent = () => {
                     <input type="checkbox" className="custom-control-input" id={task.id} name={task.id} checked={task.attributes.completed} onChange={handleChange} />
                     <label className={`custom-control-label ${task.attributes.completed ? 'text-muted' : ''}`} htmlFor={task.id} />
                   </div>
-                  <div className={styles.taskDueDate}>
+                  <div className={`${styles.taskDueDate} ${task.attributes.completed ? 'text-muted' : ''}`}>
                     <FontAwesomeIcon icon="calendar-alt" className="mr-2" />
                     <DayPickerInput value={moment(task.attributes['due-date']).calendar()} onDayChange={handleDayChange} inputProps={{ readOnly: true }} />
                   </div>
-                  <div>{task.attributes.priority}</div>
+                  <Select
+                    value={priorityOptions[task.attributes.priority - 1]}
+                    onChange={handlePriorityChange}
+                    options={priorityOptions}
+                    isSearchable={false}
+                    components={priorityComponents}
+                    styles={priorityStyles}
+                    theme={priorityTheme}
+                  />
                 </div>
                 <hr />
                 <ContentEditable className={`${styles.taskTitle} ${task.attributes.completed ? 'text-muted' : ''}`} id="title" tagName="h1" html={task.attributes.title} onChange={handleChange} />
