@@ -1,0 +1,47 @@
+.taskCheckbox {
+  min-height: 2rem;
+  padding-left: 2.5rem;
+  padding-right: 1rem;
+  border-right: 1px solid rgba(0, 0, 0, 0.1);
+
+  :global(.text-muted) {
+    text-decoration: line-through;
+  }
+  :global(.custom-control-input) {
+    &:checked ~ :global(.custom-control-label)::before {
+      background-color: #6c757d;
+      border-color: #6c757d;
+    }
+
+    &:focus ~ :global(.custom-control-label)::before {
+      box-shadow: 0 0 0 0.2rem #ced4da;
+    }
+
+    &:not(:disabled):active ~ :global(.custom-control-label)::before {
+      color: #fff;
+      background-color: #ced4da;
+      border-color: #ced4da;
+    }
+
+    &:focus:not(:checked) ~ :global(.custom-control-label)::before {
+      border-color: #adb5bd;
+    }
+  }
+
+  :global(.custom-control-label) {
+    &::before, &::after {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+  }
+}
+
+.taskTitle, .taskDescription {
+  &:global(.text-muted) {
+    text-decoration: line-through;
+  }
+
+  &:focus {
+    outline: 0px solid transparent;
+  }
+}

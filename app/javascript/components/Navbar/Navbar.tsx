@@ -27,7 +27,7 @@ const Navbar: React.FunctionComponent = () => {
   };
 
   return (
-    <nav className="navbar sticky-top navbar-expand navbar-light">
+    <nav className={`navbar sticky-top navbar-expand navbar-light ${styles.navbar}`}>
       <ul className="navbar-nav ml-auto">
         <li className="nav-item dropdown">
           <button type="button" className="btn btn-link nav-link dropdown-toggle" id="navbarDropdown" data-toggle="dropdown">

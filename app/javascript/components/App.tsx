@@ -12,6 +12,7 @@ import {
   RouteProps,
 } from 'react-router-dom';
 import Home from 'components/Home';
+import Task from 'components/Task';
 import Login from 'components/Login';
 import NotFound from 'components/NotFound';
 import {
@@ -81,6 +82,9 @@ const App: FunctionComponent = () => {
         <Switch>
           <PrivateRoute exact path="/">
             <Home />
+          </PrivateRoute>
+          <PrivateRoute path="/tasks/:id">
+            <Task />
           </PrivateRoute>
           <PublicRoute path="/login">
             <Login />

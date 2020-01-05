@@ -84,7 +84,7 @@ const Login: FunctionComponent = () => {
       </Helmet>
       <div className="container">
         <div className="row justify-content-center align-items-center vh-100">
-          <form className="col col-xs-12 col-sm-8 col-md-6 col-xl-4" onSubmit={handleSubmit}>
+          <form className="col-12 col-sm-8 col-md-6 col-xl-4" onSubmit={handleSubmit}>
             <h1 className="display-4 text-center mb-5">Taskmaster</h1>
 
             <div className={`form-group ${styles.formLabelGroup}`}>

@@ -143,11 +143,7 @@ const Home: React.FunctionComponent = () => {
               <li className="list-group-item d-flex align-items-center" key={task.id}>
                 <div className={`custom-control custom-checkbox ${styles.taskCheckbox}`}>
                   <input type="checkbox" className="custom-control-input" id={task.id} name={task.id} checked={task.attributes.completed} onChange={handleChange} />
-                  <label className={`custom-control-label ${task.attributes.completed ? 'text-muted' : ''}`} htmlFor={task.id}>
-                    {task.attributes.position}
-                    &nbsp;
-                    {task.attributes.title}
-                  </label>
+                  <label className={`custom-control-label ${task.attributes.completed ? 'text-muted' : ''}`} htmlFor={task.id}>{task.attributes.title}</label>
                 </div>
                 <div className="ml-auto">
                   {task.attributes['tag-list'].map((tag: string) => (

@@ -52,9 +52,7 @@ module.exports = {
     'react/prop-types': ['error', {
       skipUndeclared: true,
     }],
-    'jsx-a11y/label-has-associated-control': ['error', {
-      assert: 'either',
-    }],
+    'jsx-a11y/label-has-associated-control': ['off'],
     'jsx-a11y/no-autofocus': ['off'],
     'jsx-a11y/anchor-is-valid': ['error', {
       components: ['Link'],
