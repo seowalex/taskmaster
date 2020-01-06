@@ -136,7 +136,7 @@ const Task: FunctionComponent = () => {
     }
   }, [task]);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement> | ContentEditableEvent): void => {
+  const handleCheckAndEdit = (e: ChangeEvent<HTMLInputElement> | ContentEditableEvent): void => {
     if (e.currentTarget.type === 'checkbox') {
       task.attributes.completed = e.currentTarget.checked;
     } else {
@@ -161,8 +161,8 @@ const Task: FunctionComponent = () => {
     setTask({ ...task });
   };
 
-  const handlePriorityChange = (value: ValueType<OptionTypeBase>): void => {
-    task.attributes.priority = (value as OptionTypeBase).value;
+  const handlePriorityChange = (e: ValueType<OptionTypeBase>): void => {
+    task.attributes.priority = (e as OptionTypeBase).value;
     setTask({ ...task });
   };
 
@@ -184,13 +184,13 @@ const Task: FunctionComponent = () => {
     }
   };
 
-  const handleAddTag = (e: MouseEvent): void => {
+  const handleTagAdd = (e: MouseEvent): void => {
     e.preventDefault();
     task.attributes['tag-list'].push('');
     setTask({ ...task });
   };
 
-  const handleEditTag = (e: ContentEditableEvent): void => {
+  const handleTagEdit = (e: ContentEditableEvent): void => {
     const tags = [];
 
     for (const tag of e.currentTarget.parentNode.parentNode.childNodes) {
@@ -235,7 +235,7 @@ const Task: FunctionComponent = () => {
               <>
                 <div className="d-flex align-items-center">
                   <div className={`custom-control custom-checkbox ${styles.taskCheckbox}`}>
-                    <input type="checkbox" className="custom-control-input" id={task.id} name={task.id} checked={task.attributes.completed} onChange={handleChange} />
+                    <input type="checkbox" className="custom-control-input" id={task.id} name={task.id} checked={task.attributes.completed} onChange={handleCheckAndEdit} />
                     <label className={`custom-control-label ${task.attributes.completed ? 'text-muted' : ''}`} htmlFor={task.id} />
                   </div>
                   <div className={`${styles.taskDueDate} ${task.attributes.completed ? 'text-muted' : ''}`}>
@@ -269,7 +269,7 @@ const Task: FunctionComponent = () => {
                   tagName="h1"
                   placeholder="What needs doing?"
                   html={task.attributes.title}
-                  onChange={handleChange}
+                  onChange={handleCheckAndEdit}
                 />
                 <hr />
                 <ContentEditable
@@ -278,7 +278,7 @@ const Task: FunctionComponent = () => {
                   tagName="p"
                   placeholder="Description"
                   html={task.attributes.description}
-                  onChange={handleChange}
+                  onChange={handleCheckAndEdit}
                 />
                 <span>
                   {task.attributes['tag-list'].map((tag: string, index: number) => (
@@ -286,7 +286,7 @@ const Task: FunctionComponent = () => {
                       <ContentEditable
                         tagName="span"
                         html={tag}
-                        onChange={handleEditTag}
+                        onChange={handleTagEdit}
                         onKeyDown={handleTagKeyDown}
                         onBlur={handleTagBlur}
                       />
@@ -294,7 +294,7 @@ const Task: FunctionComponent = () => {
                     </span>
                   ))}
                 </span>
-                <a href="#" className={`badge ${task.attributes.completed ? 'badge-secondary' : 'badge-dark'}`} onClick={handleAddTag}>
+                <a href="#" className={`badge ${task.attributes.completed ? 'badge-secondary' : 'badge-dark'}`} onClick={handleTagAdd}>
                   <FontAwesomeIcon icon="plus" />
                 </a>
               </>
