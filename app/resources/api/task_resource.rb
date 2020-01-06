@@ -17,4 +17,8 @@ class Api::TaskResource < JSONAPI::Resource
     context = options[:context]
     context[:current_user].tasks
   end
+
+  def self.create(context)
+    Api::TaskResource.new(context[:current_user].tasks.new, nil)
+  end
 end

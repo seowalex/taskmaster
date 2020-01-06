@@ -3,8 +3,10 @@ import React, {
   useState,
   useEffect,
   useContext,
+  useRef,
   FormEvent,
   MouseEvent,
+  KeyboardEvent,
 } from 'react';
 import { Link } from 'react-router-dom';
 import { ReactSortable, SortableEvent } from 'react-sortablejs';
@@ -42,6 +44,7 @@ interface SearchParams {
 
 const Home: FunctionComponent = () => {
   const [newTask, setNewTask] = useState('');
+  const newTaskRef = useRef<any>();
   const [tasks, setTasks] = useState();
   const [search, setSearch] = useState({
     query: '',
@@ -61,6 +64,7 @@ const Home: FunctionComponent = () => {
     axios.get('/api/tasks', {
       params,
       headers: {
+        'Content-Type': 'application/vnd.api+json',
         Authorization: auth.token,
       },
     }).then((response) => {
@@ -97,8 +101,41 @@ const Home: FunctionComponent = () => {
     });
   };
 
-  const handleTaskNew = (e: ContentEditableEvent): void => {
-    console.log(e);
+  // TODO: https://github.com/lovasoa/react-contenteditable/issues/161
+  // https://github.com/lovasoa/react-contenteditable/issues/164
+  const handleTaskNew = (e: KeyboardEvent<HTMLInputElement>): void => {
+    if (e.key === 'Enter' && auth.user) {
+      e.preventDefault();
+      axios.post('/api/tasks', {
+        data: {
+          type: 'tasks',
+          attributes: {
+            title: newTaskRef.current.innerText,
+          },
+        },
+      }, {
+        headers: {
+          'Content-Type': 'application/vnd.api+json',
+          Authorization: auth.token,
+        },
+      }).then((response) => {
+        console.log(response.data.data);
+        console.log(tasks);
+        setTasks([
+          ...tasks,
+          response.data.data,
+        ]);
+      }).catch((error) => {
+        toast(error.response.data.error, {
+          type: 'error',
+          toastId: 'addError',
+        });
+      });
+    }
+  };
+
+  const handleTaskEdit = (e: ContentEditableEvent): void => {
+    setNewTask(e.target.value);
   };
 
   const handleSort = (e: SortableEvent): void => {
@@ -124,6 +161,14 @@ const Home: FunctionComponent = () => {
   };
 
   const handleCheck = (e: FormEvent<HTMLInputElement>): void => {
+    const changedTask = tasks.find((task: Task) => task.id === e.currentTarget.id);
+
+    if (changedTask) {
+      changedTask.attributes.completed = e.currentTarget.checked;
+    }
+
+    setTasks([...tasks]);
+
     axios.patch(`/api/tasks/${e.currentTarget.id}`, {
       data: {
         id: e.currentTarget.id,
@@ -137,14 +182,6 @@ const Home: FunctionComponent = () => {
         'Content-Type': 'application/vnd.api+json',
         Authorization: auth.token,
       },
-    }).then((response) => {
-      const changedTask = tasks.find((task: Task) => task.id === response.data.data.id);
-
-      if (changedTask) {
-        changedTask.attributes.completed = response.data.data.attributes.completed;
-      }
-
-      setTasks([...tasks]);
     }).catch((error) => {
       toast(error.response.data.error, {
         type: 'error',
@@ -181,14 +218,15 @@ const Home: FunctionComponent = () => {
                     ? <FontAwesomeIcon icon="search" className={styles.searchIcon} />
                     : <FontAwesomeIcon icon="times" className={`${styles.searchIcon} ${styles.searchClearIcon}`} onClick={handleSearchClear} />
               }
-
             </Navbar>
             <ContentEditable
+              innerRef={newTaskRef}
               className={styles.newTask}
               tagName="h1"
               placeholder="Add task and press Enter to save."
               html={newTask}
-              onChange={handleTaskNew}
+              onChange={handleTaskEdit}
+              onKeyDown={handleTaskNew}
             />
             {tasks ? (
               <ReactSortable
@@ -206,9 +244,7 @@ const Home: FunctionComponent = () => {
                       <label className={`custom-control-label priority-${task.attributes.priority}`} htmlFor={task.id} />
                     </div>
                     <Link to={`/tasks/${task.id}`} className={styles.taskContainer}>
-                      <div className={`${styles.taskTitle} ${task.attributes.completed ? 'text-muted' : ''}`}>
-                        {task.attributes.title}
-                      </div>
+                      <div className={`${styles.taskTitle} ${task.attributes.completed ? 'text-muted' : ''}`}>{task.attributes.title}</div>
                       <div className={styles.taskTags}>
                         {task.attributes['tag-list'].map((tag: string) => (
                           <span className={`badge ml-1 ${task.attributes.completed ? 'badge-secondary' : 'badge-dark'}`} data-tag={tag} onClick={handleTagClick} key={tag}>

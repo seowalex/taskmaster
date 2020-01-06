@@ -84,6 +84,7 @@ const Task: FunctionComponent = () => {
   useEffect(() => {
     axios.get(`/api/tasks/${id}`, {
       headers: {
+        'Content-Type': 'application/vnd.api+json',
         Authorization: auth.token,
       },
     }).then((response) => {

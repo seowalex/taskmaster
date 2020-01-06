@@ -43,10 +43,10 @@ ActiveRecord::Schema.define(version: 2020_01_01_094837) do
   end
 
   create_table "tasks", force: :cascade do |t|
-    t.text "title"
-    t.text "description"
-    t.boolean "completed"
-    t.integer "priority"
+    t.text "title", default: ""
+    t.text "description", default: ""
+    t.boolean "completed", default: false
+    t.integer "priority", default: 3
     t.integer "position"
     t.date "due_date"
     t.bigint "user_id", null: false

@@ -59,6 +59,7 @@ const Login: FunctionComponent = () => {
         type: data.remember ? 'login' : 'login_once',
         payload: {
           user: {
+            id: response.data.id,
             email: response.data.email,
           },
           token: response.headers.authorization,

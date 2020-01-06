@@ -1,8 +1,8 @@
 import { createContext, Reducer, Dispatch } from 'react';
 
 interface AuthState {
-  isAuthenticated: boolean;
   user: {
+    id: number;
     email: string;
   } | null;
   token: string | null;
@@ -12,6 +12,7 @@ interface AuthAction {
   readonly type: string;
   readonly payload?: {
     readonly user: {
+      readonly id: number;
       readonly email: string;
     };
     readonly token: string;
@@ -24,7 +25,6 @@ interface AuthContext {
 }
 
 export const authInitialState = {
-  isAuthenticated: false,
   user: null,
   token: null,
 };
@@ -37,14 +37,12 @@ export const authReducer: Reducer<AuthState, AuthAction> = (state, action) => {
         localStorage.setItem('token', action.payload.token);
 
         return {
-          isAuthenticated: true,
           user: action.payload.user,
           token: action.payload.token,
         };
       }
 
       return {
-        isAuthenticated: false,
         user: null,
         token: null,
       };
@@ -53,14 +51,12 @@ export const authReducer: Reducer<AuthState, AuthAction> = (state, action) => {
     case 'login_once': {
       if (action.payload) {
         return {
-          isAuthenticated: true,
           user: action.payload.user,
           token: action.payload.token,
         };
       }
 
       return {
-        isAuthenticated: false,
         user: null,
         token: null,
       };
@@ -70,7 +66,6 @@ export const authReducer: Reducer<AuthState, AuthAction> = (state, action) => {
       localStorage.clear();
 
       return {
-        isAuthenticated: false,
         user: null,
         token: null,
       };
