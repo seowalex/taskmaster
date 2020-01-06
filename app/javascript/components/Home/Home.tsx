@@ -99,8 +99,8 @@ const Home: FunctionComponent = () => {
     });
   };
 
-  const handleTaskEdit = (e: ChangeEvent): void => {
-    setTitle((e.currentTarget as HTMLInputElement).value);
+  const handleTaskEdit = (e: ChangeEvent<HTMLInputElement>): void => {
+    setTitle(e.currentTarget.value);
   };
 
   const handleTaskAdd = (e: KeyboardEvent<HTMLInputElement>): void => {
