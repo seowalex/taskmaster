@@ -35,7 +35,7 @@ const Task: FunctionComponent = () => {
   const priorityOptions = [
     { value: '1', label: '!!!', color: '#dc3545' },
     { value: '2', label: '!!', color: '#ffc107' },
-    { value: '3', label: '!', color: '#17a2b8' },
+    { value: '3', label: '!', color: '#6c757d' },
   ];
   const priorityComponents = {
     DropdownIndicator: (): null => null,

@@ -180,7 +180,7 @@ const Home: FunctionComponent = () => {
                   <li className="list-group-item d-flex align-items-center" key={task.id}>
                     <div className={`custom-control custom-checkbox ${styles.taskCheckbox}`}>
                       <input type="checkbox" className="custom-control-input" id={task.id} name={task.id} checked={task.attributes.completed} onChange={handleCheck} />
-                      <label className="custom-control-label" htmlFor={task.id} />
+                      <label className={`custom-control-label priority-${task.attributes.priority}`} htmlFor={task.id} />
                     </div>
                     <Link to={`/tasks/${task.id}`} className={styles.taskContainer}>
                       <div className={`${styles.taskTitle} ${task.attributes.completed ? 'text-muted' : ''}`}>
