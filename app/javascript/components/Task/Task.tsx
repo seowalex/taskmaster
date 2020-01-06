@@ -3,6 +3,7 @@ import React, {
   useState,
   useEffect,
   useContext,
+  createRef,
   ChangeEvent,
   MouseEvent,
   KeyboardEvent,
@@ -12,7 +13,6 @@ import { Link, useHistory, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { toast } from 'react-toastify';
 import Select from 'react-select';
-import { DayModifiers } from 'react-day-picker';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 import ContentEditable, { ContentEditableEvent } from 'react-contenteditable';
 import axios from 'axios';
@@ -28,6 +28,7 @@ const Task: FunctionComponent = () => {
   const { id } = useParams();
   const [task, setTask] = useState();
   const { auth } = useContext(AuthContext);
+  const dayPickerInput = createRef<DayPickerInput>();
 
   const priorityOptions = [
     { value: '1', label: '!!!', color: '#dc3545' },
@@ -143,6 +144,7 @@ const Task: FunctionComponent = () => {
 
   // TODO: https://github.com/gpbl/react-day-picker/issues/955
   const handleDayClear = (): void => {
+    dayPickerInput.current!.hideDayPicker();
     task.attributes['due-date'] = null;
     setTask({ ...task });
   };
@@ -215,6 +217,7 @@ const Task: FunctionComponent = () => {
                   <div className={`${styles.taskDueDate} ${task.attributes.completed ? 'text-muted' : ''}`}>
                     <FontAwesomeIcon icon="calendar-alt" className="mr-2" />
                     <DayPickerInput
+                      ref={dayPickerInput}
                       value={task.attributes['due-date'] ? moment(task.attributes['due-date']).calendar() : ''}
                       onDayChange={handleDayChange}
                       inputProps={{ readOnly: true }}
