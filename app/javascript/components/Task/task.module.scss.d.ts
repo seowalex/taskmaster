@@ -1,5 +1,6 @@
 export const taskNavbar: string;
 export const back: string;
+export const loading: string;
 export const taskCheckbox: string;
 export const taskDueDate: string;
 export const taskTitle: string;

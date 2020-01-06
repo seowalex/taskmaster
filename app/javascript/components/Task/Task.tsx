@@ -272,7 +272,9 @@ const Task: FunctionComponent = () => {
                 </a>
               </>
             ) : (
-              <FontAwesomeIcon icon="circle-notch" spin />
+              <div className={styles.loading}>
+                <FontAwesomeIcon icon="circle-notch" spin />
+              </div>
             )}
           </div>
         </div>

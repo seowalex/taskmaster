@@ -16,6 +16,14 @@
   }
 }
 
+.loading {
+  display: flex;
+  height: calc(100vh - 74px - 4rem);
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+}
+
 .taskCheckbox {
   min-height: 2rem;
   padding-left: 2.5rem;
