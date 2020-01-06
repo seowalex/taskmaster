@@ -3,16 +3,15 @@ import React, {
   useState,
   useEffect,
   useContext,
-  useRef,
   FormEvent,
   MouseEvent,
   KeyboardEvent,
+  ChangeEvent,
 } from 'react';
 import { Link } from 'react-router-dom';
 import { ReactSortable, SortableEvent } from 'react-sortablejs';
 import { Helmet } from 'react-helmet';
 import { toast } from 'react-toastify';
-import ContentEditable, { ContentEditableEvent } from 'react-contenteditable';
 import axios from 'axios';
 import useDebounce from 'utils/useDebounce';
 import { AuthContext } from 'contexts/AuthContext';
@@ -43,8 +42,7 @@ interface SearchParams {
 }
 
 const Home: FunctionComponent = () => {
-  const [newTask, setNewTask] = useState('');
-  const newTaskRef = useRef<any>();
+  const [title, setTitle] = useState('');
   const [tasks, setTasks] = useState();
   const [search, setSearch] = useState({
     query: '',
@@ -101,16 +99,18 @@ const Home: FunctionComponent = () => {
     });
   };
 
-  // TODO: https://github.com/lovasoa/react-contenteditable/issues/161
-  // https://github.com/lovasoa/react-contenteditable/issues/164
-  const handleTaskNew = (e: KeyboardEvent<HTMLInputElement>): void => {
-    if (e.key === 'Enter' && auth.user) {
+  const handleTaskEdit = (e: ChangeEvent): void => {
+    setTitle((e.currentTarget as HTMLInputElement).value);
+  };
+
+  const handleTaskAdd = (e: KeyboardEvent<HTMLInputElement>): void => {
+    if (e.key === 'Enter' && e.currentTarget.value !== '') {
       e.preventDefault();
       axios.post('/api/tasks', {
         data: {
           type: 'tasks',
           attributes: {
-            title: newTaskRef.current.innerText,
+            title: e.currentTarget.value,
           },
         },
       }, {
@@ -119,8 +119,7 @@ const Home: FunctionComponent = () => {
           Authorization: auth.token,
         },
       }).then((response) => {
-        console.log(response.data.data);
-        console.log(tasks);
+        setTitle('');
         setTasks([
           ...tasks,
           response.data.data,
@@ -132,10 +131,6 @@ const Home: FunctionComponent = () => {
         });
       });
     }
-  };
-
-  const handleTaskEdit = (e: ContentEditableEvent): void => {
-    setNewTask(e.target.value);
   };
 
   const handleSort = (e: SortableEvent): void => {
@@ -219,15 +214,7 @@ const Home: FunctionComponent = () => {
                     : <FontAwesomeIcon icon="times" className={`${styles.searchIcon} ${styles.searchClearIcon}`} onClick={handleSearchClear} />
               }
             </Navbar>
-            <ContentEditable
-              innerRef={newTaskRef}
-              className={styles.newTask}
-              tagName="h1"
-              placeholder="Add task and press Enter to save."
-              html={newTask}
-              onChange={handleTaskEdit}
-              onKeyDown={handleTaskNew}
-            />
+            <input type="text" className={styles.newTaskInput} placeholder="Add task and press Enter to save." value={title} onChange={handleTaskEdit} onKeyDown={handleTaskAdd} />
             {tasks ? (
               <ReactSortable
                 tag="ul"

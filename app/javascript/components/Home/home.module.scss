@@ -9,6 +9,10 @@
     width: 20rem;
     padding-right: 2rem;
   }
+
+  &::placeholder {
+    color: #adb5bd;
+  }
 }
 
 .searchIcon {
@@ -36,6 +40,19 @@
 
   &:focus {
     outline: 0px solid transparent;
+  }
+}
+
+.newTaskInput {
+  font-weight: 300;
+  font-size: 2.5rem;
+  padding: 0 0.5rem 1.5rem;
+  border: 0;
+  outline: 0;
+  width: 100%;
+
+  &::placeholder {
+    color: #adb5bd;
   }
 }
 
