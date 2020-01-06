@@ -44,7 +44,7 @@ const Navbar: FunctionComponent<NavbarProps> = (props) => {
         <li className={`nav-item dropdown ${styles.profileDropdown}`}>
           <button type="button" className="btn btn-link nav-link dropdown-toggle" id="navbarDropdown" data-toggle="dropdown">
             <img src={`https://api.adorable.io/avatars/300/${auth.user ? auth.user.email.substring(0, auth.user.email.indexOf('@')) : ''}@adorable.io.png`} alt="Profile" className={`${styles.profileImg} rounded-circle`} />
-            {auth.user ? auth.user.email.substring(0, auth.user.email.indexOf('@')) : ''}
+            <span className="d-none d-sm-inline">{auth.user ? auth.user.email.substring(0, auth.user.email.indexOf('@')) : ''}</span>
           </button>
           <div className="dropdown-menu dropdown-menu-right">
             <button type="button" className="dropdown-item">

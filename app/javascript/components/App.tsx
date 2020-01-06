@@ -45,7 +45,6 @@ const PrivateRoute: FunctionComponent<RouteProps> = ({ children, ...rest }) => {
   const { auth } = useContext(AuthContext);
 
   if (localStorage.getItem('user') !== null) {
-    auth.isAuthenticated = true;
     auth.user = JSON.parse(localStorage.getItem('user') as string);
     auth.token = localStorage.getItem('token');
   }
@@ -54,7 +53,7 @@ const PrivateRoute: FunctionComponent<RouteProps> = ({ children, ...rest }) => {
     <Route
       {...rest}
       render={({ location }): ReactNode => (
-        auth.isAuthenticated ? (
+        auth.user ? (
           children
         ) : (
           <Redirect
@@ -73,7 +72,6 @@ const PublicRoute: FunctionComponent<RouteProps> = ({ children, ...rest }) => {
   const { auth } = useContext(AuthContext);
 
   if (localStorage.getItem('user') !== null) {
-    auth.isAuthenticated = true;
     auth.user = JSON.parse(localStorage.getItem('user') as string);
     auth.token = localStorage.getItem('token');
   }
@@ -82,7 +80,7 @@ const PublicRoute: FunctionComponent<RouteProps> = ({ children, ...rest }) => {
     <Route
       {...rest}
       render={(): ReactNode => (
-        auth.isAuthenticated ? (
+        auth.user ? (
           <Redirect to="/" />
         ) : (
           children
