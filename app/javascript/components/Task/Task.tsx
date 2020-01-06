@@ -212,6 +212,22 @@ const Task: FunctionComponent = () => {
     setTask({ ...task });
   };
 
+  const handleDelete = (): void => {
+    axios.delete(task.links.self, {
+      headers: {
+        'Content-Type': 'application/vnd.api+json',
+        Authorization: auth.token,
+      },
+    }).then(() => {
+      history.replace('/');
+    }).catch((error) => {
+      toast(error.response.data.error, {
+        type: 'error',
+        toastId: 'deleteError',
+      });
+    });
+  };
+
   return (
     <>
       <Helmet>
@@ -280,23 +296,29 @@ const Task: FunctionComponent = () => {
                   html={task.attributes.description}
                   onChange={handleCheckAndEdit}
                 />
-                <span>
-                  {task.attributes['tag-list'].map((tag: string, index: number) => (
-                    <span className={`badge ${styles.taskTag} ${task.attributes.completed ? 'badge-secondary' : 'badge-dark'}`} data-tag={tag} key={index}>
-                      <ContentEditable
-                        tagName="span"
-                        html={tag}
-                        onChange={handleTagEdit}
-                        onKeyDown={handleTagKeyDown}
-                        onBlur={handleTagBlur}
-                      />
-                      <FontAwesomeIcon icon="times" className={styles.removeTag} onClick={handleRemoveTag} />
-                    </span>
-                  ))}
-                </span>
-                <a href="#" className={`badge ${task.attributes.completed ? 'badge-secondary' : 'badge-dark'}`} onClick={handleTagAdd}>
-                  <FontAwesomeIcon icon="plus" />
-                </a>
+                <div className="mb-4">
+                  <span>
+                    {task.attributes['tag-list'].map((tag: string, index: number) => (
+                      <span className={`badge ${styles.taskTag} ${task.attributes.completed ? 'badge-secondary' : 'badge-dark'}`} data-tag={tag} key={index}>
+                        <ContentEditable
+                          tagName="span"
+                          html={tag}
+                          onChange={handleTagEdit}
+                          onKeyDown={handleTagKeyDown}
+                          onBlur={handleTagBlur}
+                        />
+                        <FontAwesomeIcon icon="times" className={styles.removeTag} onClick={handleRemoveTag} />
+                      </span>
+                    ))}
+                  </span>
+                  <a href="#" className={`badge ${task.attributes.completed ? 'badge-secondary' : 'badge-dark'}`} onClick={handleTagAdd}>
+                    <FontAwesomeIcon icon="plus" />
+                  </a>
+                </div>
+                <button type="button" className="btn btn-outline-danger btn-block" onClick={handleDelete}>
+                  <FontAwesomeIcon icon="trash" className="mr-1" />
+                  Delete
+                </button>
               </>
             ) : (
               <div className={styles.loading}>
