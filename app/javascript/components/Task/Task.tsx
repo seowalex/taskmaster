@@ -8,11 +8,12 @@ import React, {
   MouseEvent,
   KeyboardEvent,
   FocusEvent,
+  CSSProperties,
 } from 'react';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { toast } from 'react-toastify';
-import Select from 'react-select';
+import Select, { ValueType, OptionTypeBase, Theme } from 'react-select';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 import ContentEditable, { ContentEditableEvent } from 'react-contenteditable';
 import axios from 'axios';
@@ -40,38 +41,37 @@ const Task: FunctionComponent = () => {
     IndicatorSeparator: (): null => null,
   };
   const priorityStyles = {
-    container: (provided: any): any => ({
+    container: (provided: CSSProperties): CSSProperties => ({
       ...provided,
       width: 44,
       fontSize: '1.2rem',
       textAlign: 'center',
       fontWeight: 'bold',
     }),
-    control: (provided: any): any => ({
+    control: (provided: CSSProperties): CSSProperties => ({
       ...provided,
       border: 'none',
       boxShadow: 'none',
       cursor: 'pointer',
     }),
-    option: (provided: any, state: any): any => ({
+    option: (provided: CSSProperties, state: any): CSSProperties => ({
       ...provided,
       color: state.data.color,
       cursor: 'pointer',
     }),
-    valueContainer: (provided: any): any => ({
+    valueContainer: (provided: CSSProperties): CSSProperties => ({
       ...provided,
       justifyContent: 'center',
     }),
-    singleValue: (provided: any, state: any): any => ({
+    singleValue: (provided: CSSProperties, state: any): CSSProperties => ({
       ...provided,
       margin: 0,
       color: task.attributes.completed ? '#6c757d' : state.data.color,
       textDecoration: task.attributes.completed ? 'line-through' : '',
     }),
   };
-  const priorityTheme = (theme: any): any => ({
+  const priorityTheme = (theme: Theme): Theme => ({
     ...theme,
-    border: 'none',
     colors: {
       ...theme.colors,
       primary: '#dee2e6',
@@ -149,8 +149,8 @@ const Task: FunctionComponent = () => {
     setTask({ ...task });
   };
 
-  const handlePriorityChange = (e: any): void => {
-    task.attributes.priority = e.value;
+  const handlePriorityChange = (value: ValueType<OptionTypeBase>): void => {
+    task.attributes.priority = (value as OptionTypeBase).value;
     setTask({ ...task });
   };
 
