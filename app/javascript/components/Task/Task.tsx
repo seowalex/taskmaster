@@ -28,7 +28,7 @@ const Task: FunctionComponent = () => {
   const history = useHistory();
   const { id } = useParams();
   const [task, setTask] = useState();
-  const { auth } = useContext(AuthContext);
+  const { auth, dispatchAuth } = useContext(AuthContext);
   const dayPickerInput = createRef<DayPickerInput>();
 
   const priorityOptions = [
@@ -88,7 +88,11 @@ const Task: FunctionComponent = () => {
     }).then((response) => {
       setTask(response.data.data);
     }).catch((error) => {
-      if (error.response.status === 404) {
+      if (error.response.status === 401) {
+        dispatchAuth({
+          type: 'logout',
+        });
+      } else if (error.response.status === 404) {
         history.replace('/error');
       } else {
         toast(error.response.data.error, {
