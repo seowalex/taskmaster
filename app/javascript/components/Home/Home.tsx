@@ -6,9 +6,11 @@ import React, {
   FormEvent,
   MouseEvent,
 } from 'react';
+import { Link } from 'react-router-dom';
 import { ReactSortable, SortableEvent } from 'react-sortablejs';
 import { Helmet } from 'react-helmet';
 import { toast } from 'react-toastify';
+import ContentEditable, { ContentEditableEvent } from 'react-contenteditable';
 import axios from 'axios';
 import useDebounce from 'utils/useDebounce';
 import { AuthContext } from 'contexts/AuthContext';
@@ -38,6 +40,7 @@ interface SearchParams {
 }
 
 const Home: FunctionComponent = () => {
+  const [newTask, setNewTask] = useState('');
   const [tasks, setTasks] = useState();
   const [search, setSearch] = useState('');
   const { auth, dispatchAuth } = useContext(AuthContext);
@@ -76,6 +79,10 @@ const Home: FunctionComponent = () => {
     setSearch(e.currentTarget.value);
   };
 
+  const handleTaskNew = (e: ContentEditableEvent): void => {
+    console.log(e);
+  };
+
   const handleSort = (e: SortableEvent): void => {
     axios.patch(`/api/tasks/${e.item.getAttribute('data-id')}`, {
       data: {
@@ -98,7 +105,7 @@ const Home: FunctionComponent = () => {
     });
   };
 
-  const handleChange = (e: FormEvent<HTMLInputElement>): void => {
+  const handleCheck = (e: FormEvent<HTMLInputElement>): void => {
     axios.patch(`/api/tasks/${e.currentTarget.id}`, {
       data: {
         id: e.currentTarget.id,
@@ -134,52 +141,70 @@ const Home: FunctionComponent = () => {
     setSearch(`${search} #${e.currentTarget.getAttribute('data-tag') as string}`.trim());
   };
 
+  // TODO: https://github.com/SortableJS/react-sortablejs/pull/119
+
   return (
     <>
       <Helmet>
         <title>Taskmaster</title>
       </Helmet>
-      <Navbar />
       <div className="container">
-        <form>
-          <div className="form-group">
-            <input type="text" className="form-control" id="todoSearch" name="search" value={search} onChange={handleSearch} placeholder="Search for tasks." />
-          </div>
-          <div className="form-group">
-            <input type="text" className="form-control" id="todoInput" placeholder="Add task and press Enter to save." />
-          </div>
-        </form>
-        {tasks ? (
-          <ReactSortable
-            tag="ul"
-            className="list-group"
-            animation={150}
-            list={tasks}
-            setList={setTasks}
-            onSort={handleSort}
-          >
-            {tasks.map((task: Task) => (
-              <li className="list-group-item d-flex align-items-center" key={task.id}>
-                <div className={`custom-control custom-checkbox ${styles.taskCheckbox}`}>
-                  <input type="checkbox" className="custom-control-input" id={task.id} name={task.id} checked={task.attributes.completed} onChange={handleChange} />
-                  <label className={`custom-control-label ${task.attributes.completed ? 'text-muted' : ''}`} htmlFor={task.id}>{task.attributes.title}</label>
-                </div>
-                <div className="ml-auto">
-                  {task.attributes['tag-list'].map((tag: string) => (
-                    <a href="#" className={`badge ml-1 ${task.attributes.completed ? 'badge-secondary' : 'badge-dark'}`} data-tag={tag} onClick={handleTagClick} key={tag}>
-                      #
-                      {tag}
-                    </a>
-                  ))}
-                </div>
+        <div className="row justify-content-center">
+          <div className="col-12 col-md-10 col-lg-8 mb-5">
+            <Navbar />
+            {/* <form>
+              <div className="form-group">
+                <input type="text" className="form-control" id="todoSearch" name="search" value={search} onChange={handleSearch} placeholder="Search for tasks." />
+              </div>
+              <div className="form-group">
+                <input type="text" className="form-control" id="todoInput" placeholder="Add task and press Enter to save." />
+              </div>
+            </form> */}
+            <ContentEditable
+              className={styles.newTask}
+              tagName="h1"
+              placeholder="Add task and press Enter to save."
+              html={newTask}
+              onChange={handleTaskNew}
+            />
+            {tasks ? (
+              <ReactSortable
+                tag="ul"
+                className={`list-group ${styles.tasks}`}
+                animation={150}
+                list={tasks}
+                setList={setTasks}
+                onSort={handleSort}
+              >
+                {tasks.map((task: Task) => (
+                  <li className="list-group-item d-flex align-items-center" key={task.id}>
+                    <div className={`custom-control custom-checkbox ${styles.taskCheckbox}`}>
+                      <input type="checkbox" className="custom-control-input" id={task.id} name={task.id} checked={task.attributes.completed} onChange={handleCheck} />
+                      <label className="custom-control-label" htmlFor={task.id} />
+                    </div>
+                    <Link to={`/tasks/${task.id}`} className={styles.taskContainer}>
+                      <div className={`${styles.taskTitle} ${task.attributes.completed ? 'text-muted' : ''}`}>
+                        {task.attributes.title}
+                      </div>
+                      <div className={styles.taskTags}>
+                        {task.attributes['tag-list'].map((tag: string) => (
+                          <a href="#" className={`badge ml-1 ${task.attributes.completed ? 'badge-secondary' : 'badge-dark'}`} data-tag={tag} onClick={handleTagClick} key={tag}>
+                            #
+                            {tag}
+                          </a>
+                        ))}
+                      </div>
+                    </Link>
+                  </li>
+                ))}
+              </ReactSortable>
+            ) : (
+              <li className="list-group-item d-flex align-items-center">
+                Loading...
               </li>
-            ))}
-          </ReactSortable>
-        ) : (
-          <li className="list-group-item d-flex align-items-center">
-            Loading...
-          </li>
-        )}
+            )}
+          </div>
+        </div>
       </div>
     </>
   );

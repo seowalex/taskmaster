@@ -1,7 +1,34 @@
-.taskCheckbox {
+.newTask {
+  font-weight: 300;
+  margin: 0 0.5rem 1.5rem;
+
+  &:empty::before {
+    content: attr(placeholder);
+    color: #adb5bd;
+    cursor: text;
+  }
+
+  &:focus {
+    outline: 0px solid transparent;
+  }
+}
+
+.tasks :global(.list-group-item) {
+  border: none;
+  padding: 0;
+
   :global(.text-muted) {
     text-decoration: line-through;
   }
+
+  &:last-child .taskContainer {
+    border-bottom: none;
+  }
+}
+
+.taskCheckbox {
+  margin-right: 1rem;
+
   :global(.custom-control-input) {
     &:checked ~ :global(.custom-control-label)::before {
       background-color: #6c757d;
@@ -21,5 +48,44 @@
     &:focus:not(:checked) ~ :global(.custom-control-label)::before {
       border-color: #adb5bd;
     }
+  }
+
+  :global(.custom-control-label) {
+    &::before, &::after {
+    width: 1.2rem;
+      height: 1.2rem;
+      top: 0.2rem;
+      left: -1.35rem;
+      cursor: pointer;
+    }
+  }
+}
+
+.taskContainer {
+  display: flex;
+  flex-grow: 1;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+  padding: 0.75rem 0;
+  color: #212529;
+  text-decoration: none;
+  background-color: transparent;
+
+  &:hover {
+    color: #212529;
+    text-decoration: none;
+  }
+}
+
+.taskTitle {
+  margin: auto 2rem auto 0;
+}
+
+.taskTags {
+  text-align: right;
+  max-width: 20rem;
+  margin-left: auto;
+
+  :global(.badge-secondary) {
+    text-decoration: line-through;
   }
 }

@@ -1,3 +1,7 @@
+html {
+  margin-left: calc(100vw - 100%);
+}
+
 .Toastify__toast--error {
   color: #721c24;
   background-color: #f8d7da;

@@ -220,7 +220,7 @@ const Task: FunctionComponent = () => {
       <div className="container">
         <div className="row justify-content-center">
           <div className="col-12 col-md-10 col-lg-8 mb-5">
-            <Navbar className={styles.taskNavbar}>
+            <Navbar>
               <Link to="/" className={styles.back}>
                 <FontAwesomeIcon icon="arrow-left" />
               </Link>

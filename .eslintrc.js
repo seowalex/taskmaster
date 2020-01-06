@@ -61,6 +61,8 @@ module.exports = {
       specialLink: ['to'],
       aspects: ['noHref'],
     }],
+    'jsx-a11y/click-events-have-key-events': ['off'],
+    'jsx-a11y/no-noninteractive-element-interactions': ['off'],
   },
   settings: {
     'import/extensions': ['.js', '.jsx', '.ts', '.tsx'],
