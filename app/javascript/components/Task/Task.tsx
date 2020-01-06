@@ -144,7 +144,10 @@ const Task: FunctionComponent = () => {
 
   // TODO: https://github.com/gpbl/react-day-picker/issues/955
   const handleDayClear = (): void => {
-    dayPickerInput.current!.hideDayPicker();
+    if (dayPickerInput.current) {
+      dayPickerInput.current.hideDayPicker();
+    }
+
     task.attributes['due-date'] = null;
     setTask({ ...task });
   };
@@ -190,7 +193,13 @@ const Task: FunctionComponent = () => {
   };
 
   const handleRemoveTag = (e: MouseEvent): void => {
-    task.attributes['tag-list'] = task.attributes['tag-list'].filter((tag: string) => tag !== e.currentTarget.parentElement!.getAttribute('data-tag'));
+    task.attributes['tag-list'] = task.attributes['tag-list'].filter((tag: string) => {
+      if (e.currentTarget.parentElement) {
+        return tag !== e.currentTarget.parentElement.getAttribute('data-tag');
+      }
+
+      return tag;
+    });
     setTask({ ...task });
   };
 
