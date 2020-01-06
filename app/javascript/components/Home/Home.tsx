@@ -214,7 +214,7 @@ const Home: FunctionComponent = () => {
                     : <FontAwesomeIcon icon="times" className={`${styles.searchIcon} ${styles.searchClearIcon}`} onClick={handleSearchClear} />
               }
             </Navbar>
-            <input type="text" className={styles.newTaskInput} placeholder="Add task and press Enter to save." value={title} onChange={handleTaskEdit} onKeyDown={handleTaskAdd} />
+            <input type="text" className={styles.newTask} placeholder="Add task and press Enter to save" value={title} onChange={handleTaskEdit} onKeyDown={handleTaskAdd} />
             {tasks ? (
               <ReactSortable
                 tag="ul"
