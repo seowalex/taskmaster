@@ -25,6 +25,7 @@ module.exports = {
     '@typescript-eslint',
   ],
   rules: {
+    'no-nested-ternary': ['off'],
     'no-param-reassign': ['error',
       {
         'props': false
@@ -63,6 +64,7 @@ module.exports = {
     }],
     'jsx-a11y/click-events-have-key-events': ['off'],
     'jsx-a11y/no-noninteractive-element-interactions': ['off'],
+    'jsx-a11y/no-static-element-interactions': ['off'],
   },
   settings: {
     'import/extensions': ['.js', '.jsx', '.ts', '.tsx'],

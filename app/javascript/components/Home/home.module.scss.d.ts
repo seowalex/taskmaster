@@ -1,3 +1,6 @@
+export const search: string;
+export const searchIcon: string;
+export const searchClearIcon: string;
 export const newTask: string;
 export const tasks: string;
 export const taskContainer: string;

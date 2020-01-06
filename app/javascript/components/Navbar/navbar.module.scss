@@ -1,21 +1,12 @@
 .navbar {
-  pointer-events: none;
+  background-color: #ffffff;
   margin-left: -1rem;
   margin-right: -1rem;
   margin-bottom: 1rem;
-
-  :global(.nav-item) {
-    pointer-events: auto;
-  }
 }
 
-.profileDropdown {
-  box-shadow: 0px 0px 10px #ffffff;
-  background-color: rgba(255, 255, 255, 0.4);
-
-  :global(.nav-link) {
-    color: #212529 !important;
-  }
+.profileDropdown :global(.nav-link) {
+  color: #212529 !important;
 }
 
 .profileImg {

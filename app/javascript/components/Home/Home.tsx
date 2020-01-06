@@ -15,6 +15,7 @@ import axios from 'axios';
 import useDebounce from 'utils/useDebounce';
 import { AuthContext } from 'contexts/AuthContext';
 import Navbar from 'components/Navbar';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styles from './home.module.scss';
 
 interface Task {
@@ -42,7 +43,10 @@ interface SearchParams {
 const Home: FunctionComponent = () => {
   const [newTask, setNewTask] = useState('');
   const [tasks, setTasks] = useState();
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState({
+    query: '',
+    isSearching: false,
+  });
   const { auth, dispatchAuth } = useContext(AuthContext);
 
   useEffect(() => {
@@ -50,8 +54,8 @@ const Home: FunctionComponent = () => {
       sort: 'position',
     };
 
-    if (search.length) {
-      params['filter[search]'] = search;
+    if (search.query.length) {
+      params['filter[search]'] = search.query;
     }
 
     axios.get('/api/tasks', {
@@ -61,6 +65,10 @@ const Home: FunctionComponent = () => {
       },
     }).then((response) => {
       setTasks(response.data.data);
+      setSearch({
+        ...search,
+        isSearching: false,
+      });
     }).catch((error) => {
       if (error.response.status === 401) {
         dispatchAuth({
@@ -73,10 +81,20 @@ const Home: FunctionComponent = () => {
         });
       }
     });
-  }, [auth, useDebounce(search, 500)]);
+  }, [auth, useDebounce(search.query, 500)]);
 
   const handleSearch = (e: FormEvent<HTMLInputElement>): void => {
-    setSearch(e.currentTarget.value);
+    setSearch({
+      query: e.currentTarget.value,
+      isSearching: true,
+    });
+  };
+
+  const handleSearchClear = (): void => {
+    setSearch({
+      query: '',
+      isSearching: true,
+    });
   };
 
   const handleTaskNew = (e: ContentEditableEvent): void => {
@@ -138,7 +156,10 @@ const Home: FunctionComponent = () => {
   const handleTagClick = (e: MouseEvent): void => {
     e.preventDefault();
 
-    setSearch(`${search} #${e.currentTarget.getAttribute('data-tag') as string}`.trim());
+    setSearch({
+      query: `${search.query} #${e.currentTarget.getAttribute('data-tag') as string}`.trim(),
+      isSearching: true,
+    });
   };
 
   // TODO: https://github.com/SortableJS/react-sortablejs/pull/119
@@ -151,15 +172,17 @@ const Home: FunctionComponent = () => {
       <div className="container">
         <div className="row justify-content-center">
           <div className="col-12 col-md-10 col-lg-8 mb-5">
-            <Navbar />
-            {/* <form>
-              <div className="form-group">
-                <input type="text" className="form-control" id="todoSearch" name="search" value={search} onChange={handleSearch} placeholder="Search for tasks." />
-              </div>
-              <div className="form-group">
-                <input type="text" className="form-control" id="todoInput" placeholder="Add task and press Enter to save." />
-              </div>
-            </form> */}
+            <Navbar>
+              <input type="text" className={`form-control ${styles.search}`} placeholder="Search for tasks" value={search.query} onChange={handleSearch} />
+              {
+                search.isSearching
+                  ? <FontAwesomeIcon icon="circle-notch" spin className={styles.searchIcon} />
+                  : search.query === ''
+                    ? <FontAwesomeIcon icon="search" className={styles.searchIcon} />
+                    : <FontAwesomeIcon icon="times" className={`${styles.searchIcon} ${styles.searchClearIcon}`} onClick={handleSearchClear} />
+              }
+
+            </Navbar>
             <ContentEditable
               className={styles.newTask}
               tagName="h1"
@@ -188,10 +211,10 @@ const Home: FunctionComponent = () => {
                       </div>
                       <div className={styles.taskTags}>
                         {task.attributes['tag-list'].map((tag: string) => (
-                          <a href="#" className={`badge ml-1 ${task.attributes.completed ? 'badge-secondary' : 'badge-dark'}`} data-tag={tag} onClick={handleTagClick} key={tag}>
+                          <span className={`badge ml-1 ${task.attributes.completed ? 'badge-secondary' : 'badge-dark'}`} data-tag={tag} onClick={handleTagClick} key={tag}>
                             #
                             {tag}
-                          </a>
+                          </span>
                         ))}
                       </div>
                     </Link>
