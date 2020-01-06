@@ -16,6 +16,16 @@
   }
 }
 
+.saving {
+  color: #ced4da;
+  text-align: center;
+  flex-grow: 1;
+
+  :global(.svg-inline--fa) {
+    margin-left: 0.5rem;
+  }
+}
+
 .loading {
   display: flex;
   height: calc(100vh - 74px - 4rem);

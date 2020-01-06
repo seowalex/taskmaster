@@ -28,6 +28,7 @@ const Task: FunctionComponent = () => {
   const history = useHistory();
   const { id } = useParams();
   const [task, setTask] = useState();
+  const [saving, setSaving] = useState(false);
   const { auth, dispatchAuth } = useContext(AuthContext);
   const dayPickerInput = createRef<DayPickerInput>();
 
@@ -116,6 +117,8 @@ const Task: FunctionComponent = () => {
           'Content-Type': 'application/vnd.api+json',
           Authorization: auth.token,
         },
+      }).then(() => {
+        setSaving(false);
       }).catch((error) => {
         toast(error.response.data.error, {
           type: 'error',
@@ -126,6 +129,8 @@ const Task: FunctionComponent = () => {
   }, [useDebounce(task, 500)]);
 
   useEffect(() => {
+    setSaving(true);
+
     if (document.querySelectorAll('[data-tag=""]').length) {
       (document.querySelectorAll('[data-tag=""]')[0].firstChild as HTMLElement).focus();
     }
@@ -216,9 +221,15 @@ const Task: FunctionComponent = () => {
         <div className="row justify-content-center">
           <div className="col-12 col-md-10 col-lg-8 mb-5">
             <Navbar className={styles.taskNavbar}>
-              <Link to="/">
-                <FontAwesomeIcon icon="arrow-left" className={styles.back} />
+              <Link to="/" className={styles.back}>
+                <FontAwesomeIcon icon="arrow-left" />
               </Link>
+              {saving ? (
+                <div className={`${styles.saving}`}>
+                  Saving
+                  <FontAwesomeIcon icon="circle-notch" spin />
+                </div>
+              ) : ''}
             </Navbar>
             {task ? (
               <>
