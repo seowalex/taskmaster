@@ -25,6 +25,12 @@ import Navbar from 'components/Navbar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styles from './task.module.scss';
 
+interface PriorityOptions {
+  value: string;
+  label: string;
+  color: string;
+}
+
 const Task: FunctionComponent = () => {
   const history = useHistory();
   const { id } = useParams();
@@ -100,7 +106,7 @@ const Task: FunctionComponent = () => {
       } else {
         toast(error.response.data.error, {
           type: 'error',
-          toastId: 'taskError',
+          toastId: 'readError',
         });
       }
     });
@@ -108,7 +114,7 @@ const Task: FunctionComponent = () => {
 
   useEffect(() => {
     if (task) {
-      axios.patch(`/api/tasks/${id}`, {
+      axios.patch(task.links.self, {
         data: {
           id,
           type: 'tasks',
@@ -124,7 +130,7 @@ const Task: FunctionComponent = () => {
       }).catch((error) => {
         toast(error.response.data.error, {
           type: 'error',
-          toastId: 'changeError',
+          toastId: 'updateError',
         });
       });
     }
@@ -143,8 +149,10 @@ const Task: FunctionComponent = () => {
   const handleCheckAndEdit = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
     if (e.currentTarget.type === 'checkbox') {
       task.attributes.completed = (e.currentTarget as HTMLInputElement).checked;
+    } else if (e.currentTarget.getAttribute('id') === 'title') {
+      task.attributes.title = e.currentTarget.value.replace(/\n/g, '');
     } else {
-      task.attributes[e.currentTarget.getAttribute('id') as string] = e.currentTarget.value;
+      task.attributes.description = e.currentTarget.value;
     }
 
     setTask({ ...task });
@@ -166,18 +174,18 @@ const Task: FunctionComponent = () => {
   };
 
   const handlePriorityChange = (e: ValueType<OptionTypeBase>): void => {
-    task.attributes.priority = (e as OptionTypeBase).value;
+    task.attributes.priority = (e as PriorityOptions).value;
     setTask({ ...task });
   };
 
-  const handleTagAdd = (e: MouseEvent): void => {
+  const handleTagAdd = (e: MouseEvent<HTMLAnchorElement>): void => {
     e.preventDefault();
     task.attributes['tag-list'].push('');
     setTask({ ...task });
   };
 
   const handleTagKeyDown = (e: KeyboardEvent<HTMLInputElement>): void => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' || e.key === 'Escape') {
       e.preventDefault();
       e.currentTarget.blur();
     } else if ((e.key === 'Tab' || e.key === ' ') && e.currentTarget.value !== '') {
@@ -205,13 +213,9 @@ const Task: FunctionComponent = () => {
     setTask({ ...task });
   };
 
-  const handleRemoveTag = (e: MouseEvent): void => {
+  const handleRemoveTag = (e: MouseEvent<Element>): void => {
     task.attributes['tag-list'] = task.attributes['tag-list'].filter((tag: string) => {
-      if (e.currentTarget.parentElement) {
-        return tag !== e.currentTarget.parentElement.getAttribute('data-tag');
-      }
-
-      return tag;
+      return tag !== e.currentTarget.getAttribute('data-tag');
     });
     setTask({ ...task });
   };
@@ -300,7 +304,7 @@ const Task: FunctionComponent = () => {
                 />
                 <div className="mb-5">
                   {task.attributes['tag-list'].map((tag: string, index: number) => (
-                    <span className={`badge ${styles.taskTag} ${task.attributes.completed ? 'badge-secondary' : 'badge-dark'}`} data-tag={tag} key={index}>
+                    <span className={`badge ${styles.taskTag} ${task.attributes.completed ? 'badge-secondary' : 'badge-dark'}`} key={index}>
                       <AutosizeInput
                         className="tag"
                         value={tag}
@@ -308,7 +312,7 @@ const Task: FunctionComponent = () => {
                         onKeyDown={handleTagKeyDown}
                         onBlur={handleTagBlur}
                       />
-                      <FontAwesomeIcon icon="times" className={styles.removeTag} onClick={handleRemoveTag} />
+                      <FontAwesomeIcon icon="times" className={styles.removeTag} onClick={handleRemoveTag} data-tag={tag} />
                     </span>
                   ))}
                   <a href="#" className={`badge ${task.attributes.completed ? 'badge-secondary' : 'badge-dark'}`} onClick={handleTagAdd}>
