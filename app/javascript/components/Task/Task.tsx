@@ -264,12 +264,13 @@ const Task: FunctionComponent = () => {
                   </div>
                   <div className={`${styles.taskDueDate} ${task.attributes.completed ? 'text-muted' : ''}`}>
                     <FontAwesomeIcon icon="calendar-alt" className="mr-2" />
+                    {task.attributes['due-date'] ? moment(task.attributes['due-date']).calendar() : 'No due date'}
                     <DayPickerInput
                       ref={dayPickerInput}
-                      value={task.attributes['due-date'] ? moment(task.attributes['due-date']).calendar() : ''}
+                      value={task.attributes['due-date']}
                       onDayChange={handleDayChange}
                       inputProps={{ readOnly: true }}
-                      placeholder="No due date"
+                      placeholder=""
                       dayPickerProps={{
                         todayButton: 'Clear',
                         onTodayButtonClick: handleDayClear,

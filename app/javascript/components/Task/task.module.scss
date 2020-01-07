@@ -69,15 +69,10 @@
   display: flex;
   flex-grow: 1;
   padding: 0 1rem;
+  align-items: center;
 
-  &:global(.text-muted) :global(.DayPickerInput) input {
-    color: #6c757d;
+  &:global(.text-muted) {
     text-decoration: line-through;
-
-    &::placeholder {
-      color: #6c757d;
-      text-decoration: line-through;
-    }
   }
 
   :global(.svg-inline--fa) {
@@ -85,25 +80,23 @@
   }
   
   :global(.DayPickerInput) {
-    flex-grow: 1;
+    position: absolute;
+    width: calc(100% - 10rem);
 
     input {
-      cursor: pointer;
+      background-color: transparent;
+      color: transparent;
       border: none;
       outline: none;
+      height: 2rem;
       width: 100%;
-
-      &::placeholder {
-        color: #212529;
-      }
+      cursor: pointer;
+      font-size: 0;
+      line-height: 0;
     }
 
-    :global(.DayPickerInput-OverlayWrapper) {
-      margin-left: -30px;
-
-      :global(.DayPicker-Footer) {
-        text-align: center;
-      }
+    :global(.DayPicker-Footer) {
+      text-align: center;
     }
   }
 }
