@@ -3,16 +3,18 @@ import React, {
   useState,
   useEffect,
   useContext,
-  FormEvent,
+  createRef,
   MouseEvent,
   KeyboardEvent,
   ChangeEvent,
+  CSSProperties,
 } from 'react';
 import { Link } from 'react-router-dom';
 import { ReactSortable, SortableEvent } from 'react-sortablejs';
 import { Helmet } from 'react-helmet';
 import { toast } from 'react-toastify';
-import Select, { ValueType, OptionTypeBase } from 'react-select';
+import Select, { ValueType, OptionTypeBase, Theme } from 'react-select';
+import DayPickerInput from 'react-day-picker/DayPickerInput';
 import axios from 'axios';
 import moment from 'moment';
 import useDebounce from 'utils/useDebounce';
@@ -48,8 +50,18 @@ interface SortOptions {
   label: string;
 }
 
+interface PriorityOptions {
+  value: number;
+  label: string;
+  color: string;
+}
+
 const Home: FunctionComponent = () => {
-  const [title, setTitle] = useState('');
+  const [newTask, setNewTask] = useState({
+    title: '',
+    priority: 3,
+    dueDate: '',
+  });
   const [tasks, setTasks] = useState();
   const [search, setSearch] = useState({
     query: '',
@@ -57,6 +69,7 @@ const Home: FunctionComponent = () => {
   });
   const [sort, setSort] = useState('position');
   const { auth, dispatchAuth } = useContext(AuthContext);
+  const dayPickerInput = createRef<DayPickerInput>();
 
   const sortOptions = [
     { value: 'title', label: 'By title' },
@@ -64,6 +77,54 @@ const Home: FunctionComponent = () => {
     { value: 'due-date', label: 'By due date' },
     { value: 'position', label: 'By custom' },
   ];
+
+  const priorityOptions = [
+    { value: 1, label: '!!!', color: '#dc3545' },
+    { value: 2, label: '!!', color: '#ffc107' },
+    { value: 3, label: '!', color: '#6c757d' },
+  ];
+  const priorityComponents = {
+    DropdownIndicator: (): null => null,
+    IndicatorSeparator: (): null => null,
+  };
+  const priorityStyles = {
+    container: (provided: CSSProperties): CSSProperties => ({
+      ...provided,
+      width: 44,
+      fontSize: '1.2rem',
+      textAlign: 'center',
+      fontWeight: 'bold',
+    }),
+    control: (provided: CSSProperties): CSSProperties => ({
+      ...provided,
+      border: 'none',
+      boxShadow: 'none',
+      cursor: 'pointer',
+    }),
+    option: (provided: CSSProperties, state: any): CSSProperties => ({
+      ...provided,
+      color: state.data.color,
+      cursor: 'pointer',
+    }),
+    valueContainer: (provided: CSSProperties): CSSProperties => ({
+      ...provided,
+      justifyContent: 'center',
+    }),
+    singleValue: (provided: CSSProperties, state: any): CSSProperties => ({
+      ...provided,
+      margin: 0,
+      color: state.data.color,
+    }),
+  };
+  const priorityTheme = (theme: Theme): Theme => ({
+    ...theme,
+    colors: {
+      ...theme.colors,
+      primary: '#dee2e6',
+      primary50: '#e9ecef',
+      primary25: '#f8f9fa',
+    },
+  });
 
   useEffect(() => {
     const params: SearchParams = {
@@ -118,8 +179,36 @@ const Home: FunctionComponent = () => {
     setSort((e as SortOptions).value);
   };
 
-  const handleTaskEdit = (e: ChangeEvent<HTMLInputElement>): void => {
-    setTitle(e.currentTarget.value);
+  const handleTaskTitle = (e: ChangeEvent<HTMLInputElement>): void => {
+    setNewTask({
+      ...newTask,
+      title: e.currentTarget.value,
+    });
+  };
+
+  const handlePriorityChange = (e: ValueType<OptionTypeBase>): void => {
+    setNewTask({
+      ...newTask,
+      priority: (e as PriorityOptions).value,
+    });
+  };
+
+  const handleDayChange = (selectedDay: Date): void => {
+    setNewTask({
+      ...newTask,
+      dueDate: selectedDay.toJSON(),
+    });
+  };
+
+  const handleDayClear = (): void => {
+    if (dayPickerInput.current) {
+      dayPickerInput.current.hideDayPicker();
+    }
+
+    setNewTask({
+      ...newTask,
+      dueDate: '',
+    });
   };
 
   const handleTaskAdd = (e: KeyboardEvent<HTMLInputElement>): void => {
@@ -128,7 +217,9 @@ const Home: FunctionComponent = () => {
         data: {
           type: 'tasks',
           attributes: {
-            title: e.currentTarget.value,
+            title: newTask.title,
+            priority: newTask.priority,
+            'due-date': newTask.dueDate,
             position: 1,
           },
         },
@@ -138,7 +229,11 @@ const Home: FunctionComponent = () => {
           Authorization: auth.token,
         },
       }).then((response) => {
-        setTitle('');
+        setNewTask({
+          title: '',
+          priority: 3,
+          dueDate: '',
+        });
         setTasks([
           response.data.data,
           ...tasks,
@@ -240,7 +335,33 @@ const Home: FunctionComponent = () => {
               isSearchable={false}
               className={styles.sort}
             />
-            <input type="text" className={styles.newTask} placeholder="Add task and press Enter to save" value={title} onChange={handleTaskEdit} onKeyDown={handleTaskAdd} />
+            <div className={styles.newTask}>
+              <input type="text" className={styles.newTaskTitle} placeholder="Add task and press Enter to save" value={newTask.title} onChange={handleTaskTitle} onKeyDown={handleTaskAdd} />
+              <div className={styles.newTaskDueDate}>
+                <FontAwesomeIcon icon="calendar-alt" className={newTask.dueDate.length ? '' : 'text-muted'} />
+                <DayPickerInput
+                  ref={dayPickerInput}
+                  value={newTask.dueDate}
+                  onDayChange={handleDayChange}
+                  inputProps={{ readOnly: true }}
+                  placeholder=""
+                  dayPickerProps={{
+                    todayButton: 'Clear',
+                    onTodayButtonClick: handleDayClear,
+                  }}
+                />
+              </div>
+              <Select
+                value={priorityOptions[newTask.priority - 1]}
+                onChange={handlePriorityChange}
+                options={priorityOptions}
+                isSearchable={false}
+                components={priorityComponents}
+                styles={priorityStyles}
+                theme={priorityTheme}
+                className={styles.newTaskPriority}
+              />
+            </div>
             {tasks ? tasks.length ? (
               <ReactSortable
                 tag="ul"

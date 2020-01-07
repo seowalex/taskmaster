@@ -64,16 +64,53 @@
 }
 
 .newTask {
-  font-weight: 300;
-  font-size: 2.5rem;
-  padding: 0 0.5rem 1.5rem;
-  border: none;
-  outline: none;
-  width: 100%;
-  text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
 
-  &::placeholder {
-    color: #adb5bd;
+  .newTaskTitle {
+    font-weight: 300;
+    font-size: 2.5rem;
+    padding-bottom: 1.5rem;
+    border: none;
+    outline: none;
+    flex-grow: 1;
+    text-overflow: ellipsis;
+
+    &::placeholder {
+      color: #adb5bd;
+    }
+  }
+
+  .newTaskDueDate {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-bottom: 1.5rem;
+
+    :global(.DayPickerInput) {
+      position: absolute;
+      width: 2rem;
+      margin-left: -1.4rem;
+
+      input {
+        background-color: transparent;
+        color: transparent;
+        border: none;
+        outline: none;
+        height: 2rem;
+        width: 100%;
+        cursor: pointer;
+        font-size: 0;
+        line-height: 0;
+      }
+
+      :global(.DayPicker-Footer) {
+        text-align: center;
+      }
+    }
+  }
+
+  .newTaskPriority {
+    padding: 0 0.5rem 1.5rem
   }
 }
 

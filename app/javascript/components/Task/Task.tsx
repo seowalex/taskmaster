@@ -26,7 +26,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styles from './task.module.scss';
 
 interface PriorityOptions {
-  value: string;
+  value: number;
   label: string;
   color: string;
 }
@@ -40,9 +40,9 @@ const Task: FunctionComponent = () => {
   const dayPickerInput = createRef<DayPickerInput>();
 
   const priorityOptions = [
-    { value: '1', label: '!!!', color: '#dc3545' },
-    { value: '2', label: '!!', color: '#ffc107' },
-    { value: '3', label: '!', color: '#6c757d' },
+    { value: 1, label: '!!!', color: '#dc3545' },
+    { value: 2, label: '!!', color: '#ffc107' },
+    { value: 3, label: '!', color: '#6c757d' },
   ];
   const priorityComponents = {
     DropdownIndicator: (): null => null,
@@ -159,7 +159,7 @@ const Task: FunctionComponent = () => {
   };
 
   const handleDayChange = (selectedDay: Date): void => {
-    task.attributes['due-date'] = selectedDay.toJSON();
+    task.attributes['due-date'] = selectedDay;
     setTask({ ...task });
   };
 
