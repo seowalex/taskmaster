@@ -79,13 +79,13 @@ const Home: FunctionComponent = () => {
       } else {
         toast(error.response.data.error, {
           type: 'error',
-          toastId: 'loginError',
+          toastId: 'readError',
         });
       }
     });
   }, [auth, useDebounce(search.query, 500)]);
 
-  const handleSearch = (e: FormEvent<HTMLInputElement>): void => {
+  const handleSearch = (e: ChangeEvent<HTMLInputElement>): void => {
     setSearch({
       query: e.currentTarget.value,
       isSearching: true,
@@ -105,7 +105,6 @@ const Home: FunctionComponent = () => {
 
   const handleTaskAdd = (e: KeyboardEvent<HTMLInputElement>): void => {
     if (e.key === 'Enter' && e.currentTarget.value !== '') {
-      e.preventDefault();
       axios.post('/api/tasks', {
         data: {
           type: 'tasks',
@@ -155,7 +154,7 @@ const Home: FunctionComponent = () => {
     });
   };
 
-  const handleCheck = (e: FormEvent<HTMLInputElement>): void => {
+  const handleCheck = (e: ChangeEvent<HTMLInputElement>): void => {
     const changedTask = tasks.find((task: Task) => task.id === e.currentTarget.id);
 
     if (changedTask) {
@@ -180,7 +179,7 @@ const Home: FunctionComponent = () => {
     }).catch((error) => {
       toast(error.response.data.error, {
         type: 'error',
-        toastId: 'changeError',
+        toastId: 'editError',
       });
     });
   };
@@ -215,7 +214,7 @@ const Home: FunctionComponent = () => {
               }
             </Navbar>
             <input type="text" className={styles.newTask} placeholder="Add task and press Enter to save" value={title} onChange={handleTaskEdit} onKeyDown={handleTaskAdd} />
-            {tasks ? (
+            {tasks ? tasks.length ? (
               <ReactSortable
                 tag="ul"
                 className={`list-group ${styles.tasks}`}
@@ -234,10 +233,7 @@ const Home: FunctionComponent = () => {
                       <div className={`${styles.taskTitle} ${task.attributes.completed ? 'text-muted' : ''}`}>{task.attributes.title}</div>
                       <div className={styles.taskTags}>
                         {task.attributes['tag-list'].map((tag: string) => (
-                          <span className={`badge ml-1 ${task.attributes.completed ? 'badge-secondary' : 'badge-dark'}`} data-tag={tag} onClick={handleTagClick} key={tag}>
-                            #
-                            {tag}
-                          </span>
+                          <span className={`badge ml-1 ${task.attributes.completed ? 'badge-secondary' : 'badge-dark'}`} data-tag={tag} onClick={handleTagClick} key={tag}>{tag}</span>
                         ))}
                       </div>
                     </Link>
@@ -245,9 +241,14 @@ const Home: FunctionComponent = () => {
                 ))}
               </ReactSortable>
             ) : (
-              <li className="list-group-item d-flex align-items-center">
-                Loading...
-              </li>
+              <div className={styles.noTasks}>
+                <FontAwesomeIcon icon="tasks" />
+                <div>No tasks here. Add some tasks to get started!</div>
+              </div>
+            ) : (
+              <div className={styles.loading}>
+                <FontAwesomeIcon icon="circle-notch" spin />
+              </div>
             )}
           </div>
         </div>

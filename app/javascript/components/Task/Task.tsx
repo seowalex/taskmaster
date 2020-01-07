@@ -149,7 +149,7 @@ const Task: FunctionComponent = () => {
   const handleCheckAndEdit = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
     if (e.currentTarget.type === 'checkbox') {
       task.attributes.completed = (e.currentTarget as HTMLInputElement).checked;
-    } else if (e.currentTarget.getAttribute('id') === 'title') {
+    } else if (e.currentTarget.id === 'title') {
       task.attributes.title = e.currentTarget.value.replace(/\n/g, '');
     } else {
       task.attributes.description = e.currentTarget.value;
@@ -267,7 +267,7 @@ const Task: FunctionComponent = () => {
                     {task.attributes['due-date'] ? moment(task.attributes['due-date']).calendar() : 'No due date'}
                     <DayPickerInput
                       ref={dayPickerInput}
-                      value={task.attributes['due-date']}
+                      value={task.attributes['due-date'] ? task.attributes['due-date'] : ''}
                       onDayChange={handleDayChange}
                       inputProps={{ readOnly: true }}
                       placeholder=""

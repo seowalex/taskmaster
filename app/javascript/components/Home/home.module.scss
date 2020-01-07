@@ -1,3 +1,31 @@
+.noTasks {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  font-weight: 300;
+  line-height: 1.2;
+  font-size: 3rem;
+  height: calc(100vh - 78px - 9rem);
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  color: #6c757d;
+
+  :global(.svg-inline--fa) {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+  }
+}
+
+.loading {
+  display: flex;
+  height: calc(100vh - 78px - 9rem);
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  color: #6c757d;
+}
+
 .search {
   border-radius: 1.2rem;
   width: 2.4rem;
@@ -138,6 +166,10 @@
   text-align: right;
   max-width: 20rem;
   margin-left: auto;
+
+  span::before {
+    content: '#';
+  }
 
   :global(.badge-secondary) {
     text-decoration: line-through;

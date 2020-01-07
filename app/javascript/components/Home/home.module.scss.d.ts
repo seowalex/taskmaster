@@ -1,3 +1,5 @@
+export const noTasks: string;
+export const loading: string;
 export const search: string;
 export const searchIcon: string;
 export const searchClearIcon: string;
