@@ -69,6 +69,7 @@ const Home: FunctionComponent = () => {
   });
   const [sort, setSort] = useState('position');
   const { auth, dispatchAuth } = useContext(AuthContext);
+  const newTaskTitle = createRef<HTMLInputElement>();
   const dayPickerInput = createRef<DayPickerInput>();
 
   const sortOptions = [
@@ -191,6 +192,10 @@ const Home: FunctionComponent = () => {
       ...newTask,
       priority: (e as PriorityOptions).value,
     });
+
+    if (newTaskTitle.current) {
+      newTaskTitle.current.focus();
+    }
   };
 
   const handleDayChange = (selectedDay: Date): void => {
@@ -198,6 +203,10 @@ const Home: FunctionComponent = () => {
       ...newTask,
       dueDate: selectedDay.toJSON(),
     });
+
+    if (newTaskTitle.current) {
+      newTaskTitle.current.focus();
+    }
   };
 
   const handleDayClear = (): void => {
@@ -209,6 +218,10 @@ const Home: FunctionComponent = () => {
       ...newTask,
       dueDate: '',
     });
+
+    if (newTaskTitle.current) {
+      newTaskTitle.current.focus();
+    }
   };
 
   const handleTaskAdd = (e: KeyboardEvent<HTMLInputElement>): void => {
@@ -336,7 +349,7 @@ const Home: FunctionComponent = () => {
               className={styles.sort}
             />
             <div className={styles.newTask}>
-              <input type="text" className={styles.newTaskTitle} placeholder="Add task and press Enter to save" value={newTask.title} onChange={handleTaskTitle} onKeyDown={handleTaskAdd} />
+              <input type="text" className={styles.newTaskTitle} ref={newTaskTitle} placeholder="Add task and press Enter to save" value={newTask.title} onChange={handleTaskTitle} onKeyDown={handleTaskAdd} />
               <div className={styles.newTaskDueDate}>
                 <FontAwesomeIcon icon="calendar-alt" className={newTask.dueDate.length ? '' : 'text-muted'} />
                 <DayPickerInput
