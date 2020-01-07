@@ -14,6 +14,7 @@ import { Helmet } from 'react-helmet';
 import { toast } from 'react-toastify';
 import Select, { ValueType, OptionTypeBase } from 'react-select';
 import axios from 'axios';
+import moment from 'moment';
 import useDebounce from 'utils/useDebounce';
 import { AuthContext } from 'contexts/AuthContext';
 import Navbar from 'components/Navbar';
@@ -262,6 +263,15 @@ const Home: FunctionComponent = () => {
                           <span className={`badge ml-1 ${task.attributes.completed ? 'badge-secondary' : 'badge-dark'}`} data-tag={tag} onClick={handleTagClick} key={tag}>{tag}</span>
                         ))}
                       </div>
+                      {task.attributes['due-date'] ? (
+                        <div className={styles.taskDueDate}>
+                          {
+                            moment(task.attributes['due-date']).year() === moment().year()
+                              ? moment(task.attributes['due-date']).format('MMM D')
+                              : moment(task.attributes['due-date']).format('MMM D, YYYY')
+                          }
+                        </div>
+                      ) : ('')}
                     </Link>
                   </li>
                 ))}
