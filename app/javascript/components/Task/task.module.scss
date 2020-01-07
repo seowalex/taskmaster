@@ -31,24 +31,19 @@
   padding-left: 2.5rem;
   padding-right: 1rem;
   border-right: 1px solid rgba(0, 0, 0, 0.1);
-  cursor: pointer;
 
-  :global(.text-muted) {
-    text-decoration: line-through;
+  :global(.custom-control-label)::after {
+    cursor: pointer;
   }
 
   :global(.custom-control-input) {
-    ~ :global(.custom-control-label)::before, ~ :global(.custom-control-label)::after {
-      cursor: pointer;
-    }
-
     &:checked ~ :global(.custom-control-label)::before {
       background-color: #6c757d;
       border-color: #6c757d;
     }
 
     &:focus ~ :global(.custom-control-label)::before {
-      box-shadow: 0 0 0 0.2rem #ced4da;
+      box-shadow: none;
     }
 
     &:not(:disabled):active ~ :global(.custom-control-label)::before {
@@ -78,6 +73,11 @@
   &:global(.text-muted) :global(.DayPickerInput) input {
     color: #6c757d;
     text-decoration: line-through;
+
+    &::placeholder {
+      color: #6c757d;
+      text-decoration: line-through;
+    }
   }
 
   :global(.svg-inline--fa) {
@@ -92,6 +92,10 @@
       border: none;
       outline: none;
       width: 100%;
+
+      &::placeholder {
+        color: #212529;
+      }
     }
 
     :global(.DayPickerInput-OverlayWrapper) {
@@ -149,6 +153,6 @@
 }
 
 .removeTag {
-  margin-left: 0.5rem;
+  margin-left: 0.25rem;
   cursor: pointer;
 }
