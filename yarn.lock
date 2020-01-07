@@ -7084,10 +7084,9 @@ raw-body@2.4.0:
     iconv-lite "0.4.24"
     unpipe "1.0.0"
 
-react-day-picker@^7.4.0:
+"react-day-picker@https://github.com/seowalex/react-day-picker.git#v7":
   version "7.4.0"
-  resolved "https://registry.yarnpkg.com/react-day-picker/-/react-day-picker-7.4.0.tgz#1b3dfe76a81864518d241214ba658da25903b7df"
-  integrity sha512-dqfr96EY7mHSpbW23hJI6of2JvxClDfHLNQ7VqctxBvNsJIzEiwh3zS8hEhqNza7xuR0vC4KN517zxndgb3/fw==
+  resolved "https://github.com/seowalex/react-day-picker.git#4e3e9df3d8bd26fd7aad94aab4c4c021ce2739d0"
   dependencies:
     prop-types "^15.6.2"
 
@@ -7183,10 +7182,9 @@ react-side-effect@^1.1.0:
   dependencies:
     shallowequal "^1.0.1"
 
-react-sortablejs@^2.0.7:
+"react-sortablejs@https://github.com/seowalex/react-sortablejs":
   version "2.0.7"
-  resolved "https://registry.yarnpkg.com/react-sortablejs/-/react-sortablejs-2.0.7.tgz#654fd40f36918e78ac9e40a059e27862a96e786b"
-  integrity sha512-1IbPXUiOVcgUhfBj31bOPbPtwPTO5xlHJ3VJqdJaKeZX5ohpe73reltx6BWITyLzNSsTuHw4u3ulQiV6sUsjNA==
+  resolved "https://github.com/seowalex/react-sortablejs#2d520fc559a5eb78b27ffacfcf12a1f1bafec674"
   dependencies:
     "@types/sortablejs" "^1.10.0"
     classnames "^2.2.6"
