@@ -47,12 +47,12 @@
   border: none;
   padding: 0;
 
-  :global(.text-muted) {
-    text-decoration: line-through;
-  }
-
   &:last-child .taskContainer {
     border-bottom: none;
+  }
+
+  :global(.text-muted) {
+    text-decoration: line-through;
   }
 }
 
@@ -66,13 +66,21 @@
     }
 
     &:focus ~ :global(.custom-control-label)::before {
-      box-shadow: 0 0 0 0.2rem #ced4da;
+      box-shadow: none;
     }
 
     &:not(:disabled):active ~ :global(.custom-control-label)::before {
       color: #ffffff;
       background-color: #ced4da;
       border-color: #ced4da;
+    }
+
+    &:focus:not(:checked) ~ :global(.custom-control-label):global(.priority-1)::before {
+      border-color: #dc3545;
+    }
+
+    &:focus:not(:checked) ~ :global(.custom-control-label):global(.priority-2)::before {
+      border-color: #ffc107;
     }
 
     &:focus:not(:checked) ~ :global(.custom-control-label)::before {
@@ -86,6 +94,13 @@
       height: 1.2rem;
       top: 0.2rem;
       left: -1.35rem;
+    }
+
+    &::before {
+      background-color: transparent;
+    }
+
+    &::after {
       cursor: pointer;
     }
 
