@@ -12,6 +12,7 @@ import { Link } from 'react-router-dom';
 import { ReactSortable, SortableEvent } from 'react-sortablejs';
 import { Helmet } from 'react-helmet';
 import { toast } from 'react-toastify';
+import Select, { ValueType, OptionTypeBase } from 'react-select';
 import axios from 'axios';
 import useDebounce from 'utils/useDebounce';
 import { AuthContext } from 'contexts/AuthContext';
@@ -41,6 +42,11 @@ interface SearchParams {
   'filter[search]'?: string;
 }
 
+interface SortOptions {
+  value: string;
+  label: string;
+}
+
 const Home: FunctionComponent = () => {
   const [title, setTitle] = useState('');
   const [tasks, setTasks] = useState();
@@ -48,11 +54,19 @@ const Home: FunctionComponent = () => {
     query: '',
     isSearching: false,
   });
+  const [sort, setSort] = useState('position');
   const { auth, dispatchAuth } = useContext(AuthContext);
+
+  const sortOptions = [
+    { value: 'title', label: 'By title' },
+    { value: 'priority', label: 'By priority' },
+    { value: 'due-date', label: 'By due date' },
+    { value: 'position', label: 'By custom' },
+  ];
 
   useEffect(() => {
     const params: SearchParams = {
-      sort: 'position',
+      sort,
     };
 
     if (search.query.length) {
@@ -83,7 +97,7 @@ const Home: FunctionComponent = () => {
         });
       }
     });
-  }, [auth, useDebounce(search.query, 500)]);
+  }, [auth, sort, useDebounce(search.query, 500)]);
 
   const handleSearch = (e: ChangeEvent<HTMLInputElement>): void => {
     setSearch({
@@ -99,6 +113,10 @@ const Home: FunctionComponent = () => {
     });
   };
 
+  const handleSortOrder = (e: ValueType<OptionTypeBase>): void => {
+    setSort((e as SortOptions).value);
+  };
+
   const handleTaskEdit = (e: ChangeEvent<HTMLInputElement>): void => {
     setTitle(e.currentTarget.value);
   };
@@ -110,6 +128,7 @@ const Home: FunctionComponent = () => {
           type: 'tasks',
           attributes: {
             title: e.currentTarget.value,
+            position: 1,
           },
         },
       }, {
@@ -120,8 +139,8 @@ const Home: FunctionComponent = () => {
       }).then((response) => {
         setTitle('');
         setTasks([
-          ...tasks,
           response.data.data,
+          ...tasks,
         ]);
       }).catch((error) => {
         toast(error.response.data.error, {
@@ -213,6 +232,13 @@ const Home: FunctionComponent = () => {
                     : <FontAwesomeIcon icon="times" className={`${styles.searchIcon} ${styles.searchClearIcon}`} onClick={handleSearchClear} />
               }
             </Navbar>
+            <Select
+              value={sortOptions.find((e: SortOptions): boolean => e.value === sort)}
+              onChange={handleSortOrder}
+              options={sortOptions}
+              isSearchable={false}
+              className={styles.sort}
+            />
             <input type="text" className={styles.newTask} placeholder="Add task and press Enter to save" value={title} onChange={handleTaskEdit} onKeyDown={handleTaskAdd} />
             {tasks ? tasks.length ? (
               <ReactSortable

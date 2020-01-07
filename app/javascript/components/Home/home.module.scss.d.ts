@@ -1,3 +1,4 @@
+export const sort: string;
 export const noTasks: string;
 export const loading: string;
 export const search: string;
