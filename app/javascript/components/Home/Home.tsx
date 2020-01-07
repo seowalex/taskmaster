@@ -384,6 +384,8 @@ const Home: FunctionComponent = () => {
                 list={tasks}
                 setList={setTasks}
                 onSort={handleSort}
+                delay={300}
+                delayOnTouchOnly
               >
                 {tasks.map((task: Task) => (
                   <li className="list-group-item d-flex align-items-center" key={task.id}>
