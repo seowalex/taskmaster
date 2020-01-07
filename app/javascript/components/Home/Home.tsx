@@ -364,16 +364,17 @@ const Home: FunctionComponent = () => {
                   }}
                 />
               </div>
-              <Select
-                value={priorityOptions[newTask.priority - 1]}
-                onChange={handlePriorityChange}
-                options={priorityOptions}
-                isSearchable={false}
-                components={priorityComponents}
-                styles={priorityStyles}
-                theme={priorityTheme}
-                className={styles.newTaskPriority}
-              />
+              <div className={styles.newTaskPriority}>
+                <Select
+                  value={priorityOptions[newTask.priority - 1]}
+                  onChange={handlePriorityChange}
+                  options={priorityOptions}
+                  isSearchable={false}
+                  components={priorityComponents}
+                  styles={priorityStyles}
+                  theme={priorityTheme}
+                />
+              </div>
             </div>
             {tasks ? tasks.length ? (
               <ReactSortable
