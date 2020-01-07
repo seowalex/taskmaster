@@ -105,21 +105,20 @@
 }
 
 .taskTitle, .taskDescription {
+  width: 100%;
   font-weight: 300;
-
-  &:empty::before {
-    content: attr(placeholder);
-    color: #adb5bd;
-    cursor: text;
-  }
+  border: none;
+  outline: none;
+  resize: none;
 
   &:global(.text-muted) {
     text-decoration: line-through;
   }
+}
 
-  &:focus {
-    outline: 0px solid transparent;
-  }
+.taskTitle {
+  font-size: 2.5rem;
+  line-height: 1.2;
 }
 
 .taskDescription {
@@ -128,17 +127,24 @@
 
 .taskTag {
   margin-right: 0.25rem;
+  padding: 0 0.4em;
 
   &::before {
     content: '#';
   }
 
   &:global(.badge-secondary) {
-    text-decoration: line-through;
+    input {
+      text-decoration: line-through;
+    }
   }
 
-  & span:focus {
-    outline: 0px solid transparent;
+  input {
+    font-weight: 700;
+    color: #ffffff;
+    background-color: transparent;
+    border: none;
+    outline: none;
   }
 }
 

@@ -15,7 +15,8 @@ import { Helmet } from 'react-helmet';
 import { toast } from 'react-toastify';
 import Select, { ValueType, OptionTypeBase, Theme } from 'react-select';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
-import ContentEditable, { ContentEditableEvent } from 'react-contenteditable';
+import TextareaAutosize from 'react-textarea-autosize';
+import AutosizeInput from 'react-input-autosize';
 import axios from 'axios';
 import moment from 'moment';
 import useDebounce from 'utils/useDebounce';
@@ -132,16 +133,18 @@ const Task: FunctionComponent = () => {
   useEffect(() => {
     setSaving(true);
 
-    if (document.querySelectorAll('[data-tag=""]').length) {
-      (document.querySelectorAll('[data-tag=""]')[0].firstChild as HTMLElement).focus();
+    for (let i = 0; i < document.getElementsByClassName('tag').length; i += 1) {
+      if (document.getElementsByClassName('tag')[i].getElementsByTagName('input')[0].value === '') {
+        document.getElementsByClassName('tag')[i].getElementsByTagName('input')[0].focus();
+      }
     }
   }, [task]);
 
-  const handleCheckAndEdit = (e: ChangeEvent<HTMLInputElement> | ContentEditableEvent): void => {
+  const handleCheckAndEdit = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
     if (e.currentTarget.type === 'checkbox') {
-      task.attributes.completed = e.currentTarget.checked;
+      task.attributes.completed = (e.currentTarget as HTMLInputElement).checked;
     } else {
-      task.attributes[e.currentTarget.getAttribute('id')] = e.target.value;
+      task.attributes[e.currentTarget.getAttribute('id') as string] = e.currentTarget.value;
     }
 
     setTask({ ...task });
@@ -167,35 +170,35 @@ const Task: FunctionComponent = () => {
     setTask({ ...task });
   };
 
-  const handleTagKeyDown = (e: KeyboardEvent): void => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      (e.currentTarget as HTMLElement).blur();
-    } else if ((e.key === 'Tab' || e.key === ' ') && e.currentTarget.textContent !== '') {
-      e.preventDefault();
-      task.attributes['tag-list'].push('');
-      setTask({ ...task });
-    }
-  };
-
-  const handleTagBlur = (e: FocusEvent<HTMLSpanElement>): void => {
-    if (e.currentTarget.textContent === '') {
-      task.attributes['tag-list'] = task.attributes['tag-list'].filter((tag: string) => tag !== '');
-      setTask({ ...task });
-    }
-  };
-
   const handleTagAdd = (e: MouseEvent): void => {
     e.preventDefault();
     task.attributes['tag-list'].push('');
     setTask({ ...task });
   };
 
-  const handleTagEdit = (e: ContentEditableEvent): void => {
+  const handleTagKeyDown = (e: KeyboardEvent<HTMLInputElement>): void => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      e.currentTarget.blur();
+    } else if ((e.key === 'Tab' || e.key === ' ') && e.currentTarget.value !== '') {
+      e.preventDefault();
+      task.attributes['tag-list'].push('');
+      setTask({ ...task });
+    }
+  };
+
+  const handleTagBlur = (e: FocusEvent<HTMLInputElement>): void => {
+    if (e.currentTarget.value === '') {
+      task.attributes['tag-list'] = task.attributes['tag-list'].filter((tag: string) => tag !== '');
+      setTask({ ...task });
+    }
+  };
+
+  const handleTagEdit = (): void => {
     const tags = [];
 
-    for (const tag of e.currentTarget.parentNode.parentNode.childNodes) {
-      tags.push(tag.textContent.replace(/[\s|\u00a0)]+/g, ''));
+    for (let i = 0; i < document.getElementsByClassName('tag').length; i += 1) {
+      tags.push(document.getElementsByClassName('tag')[i].getElementsByTagName('input')[0].value.replace(/[\s|\u00a0)]+/g, ''));
     }
 
     task.attributes['tag-list'] = tags;
@@ -280,38 +283,34 @@ const Task: FunctionComponent = () => {
                   />
                 </div>
                 <hr />
-                <ContentEditable
-                  className={`${styles.taskTitle} ${task.attributes.completed ? 'text-muted' : ''}`}
+                <TextareaAutosize
                   id="title"
-                  tagName="h1"
+                  className={`${styles.taskTitle} ${task.attributes.completed ? 'text-muted' : ''}`}
                   placeholder="What needs doing?"
-                  html={task.attributes.title}
+                  value={task.attributes.title}
                   onChange={handleCheckAndEdit}
                 />
                 <hr />
-                <ContentEditable
-                  className={`${styles.taskDescription} ${task.attributes.completed ? 'text-muted' : ''}`}
+                <TextareaAutosize
                   id="description"
-                  tagName="p"
+                  className={`${styles.taskDescription} ${task.attributes.completed ? 'text-muted' : ''} mb-2`}
                   placeholder="Description"
-                  html={task.attributes.description}
+                  value={task.attributes.description}
                   onChange={handleCheckAndEdit}
                 />
-                <div className="mb-4">
-                  <span>
-                    {task.attributes['tag-list'].map((tag: string, index: number) => (
-                      <span className={`badge ${styles.taskTag} ${task.attributes.completed ? 'badge-secondary' : 'badge-dark'}`} data-tag={tag} key={index}>
-                        <ContentEditable
-                          tagName="span"
-                          html={tag}
-                          onChange={handleTagEdit}
-                          onKeyDown={handleTagKeyDown}
-                          onBlur={handleTagBlur}
-                        />
-                        <FontAwesomeIcon icon="times" className={styles.removeTag} onClick={handleRemoveTag} />
-                      </span>
-                    ))}
-                  </span>
+                <div className="mb-5">
+                  {task.attributes['tag-list'].map((tag: string, index: number) => (
+                    <span className={`badge ${styles.taskTag} ${task.attributes.completed ? 'badge-secondary' : 'badge-dark'}`} data-tag={tag} key={index}>
+                      <AutosizeInput
+                        className="tag"
+                        value={tag}
+                        onChange={handleTagEdit}
+                        onKeyDown={handleTagKeyDown}
+                        onBlur={handleTagBlur}
+                      />
+                      <FontAwesomeIcon icon="times" className={styles.removeTag} onClick={handleRemoveTag} />
+                    </span>
+                  ))}
                   <a href="#" className={`badge ${task.attributes.completed ? 'badge-secondary' : 'badge-dark'}`} onClick={handleTagAdd}>
                     <FontAwesomeIcon icon="plus" />
                   </a>
