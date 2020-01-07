@@ -4,18 +4,16 @@ import React, {
   useState,
   useContext,
 } from 'react';
-import { Link, useHistory, useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { AuthContext } from 'contexts/AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import styles from './login.module.scss';
+import styles from './signup.module.scss';
 
-const Login: FunctionComponent = () => {
+const Signup: FunctionComponent = () => {
   const history = useHistory();
-  const location = useLocation();
-  const { from } = location.state || { from: { pathname: '/' } };
   const { dispatchAuth } = useContext(AuthContext);
   const [request, setRequest] = useState({
     isAuthorised: true,
@@ -24,13 +22,12 @@ const Login: FunctionComponent = () => {
   const [data, setData] = useState({
     email: '',
     password: '',
-    remember: true,
   });
 
   const handleChange = (e: FormEvent<HTMLInputElement>): void => {
     setData({
       ...data,
-      [e.currentTarget.name]: e.currentTarget.type === 'checkbox' ? e.currentTarget.checked : e.currentTarget.value,
+      [e.currentTarget.name]: e.currentTarget.value,
     });
 
     setRequest({
@@ -47,7 +44,7 @@ const Login: FunctionComponent = () => {
       isLoading: true,
     });
 
-    axios.post('/api/login', {
+    axios.post('/api/signup', {
       user: {
         email: data.email,
         password: data.password,
@@ -56,7 +53,7 @@ const Login: FunctionComponent = () => {
       headers: { 'Content-Type': 'application/json' },
     }).then((response) => {
       dispatchAuth({
-        type: data.remember ? 'login' : 'login_once',
+        type: 'login',
         payload: {
           user: {
             id: response.data.id,
@@ -66,18 +63,31 @@ const Login: FunctionComponent = () => {
         },
       });
 
-      toast.dismiss('loginError');
+      toast.dismiss('signupError');
 
-      history.replace(from);
+      history.replace('/');
     }).catch((error) => {
       setRequest({
         isAuthorised: false,
         isLoading: false,
       });
 
-      toast(error.response.data.error, {
+      let errorMessage = '';
+
+      if (error.response.data.errors.email) {
+        for (const msg of error.response.data.errors.email) {
+          errorMessage += `Email ${msg}\n`;
+        }
+      }
+
+      if (error.response.data.errors.password) {
+        for (const msg of error.response.data.errors.password) {
+          errorMessage += `Password ${msg}\n`;
+        }
+      }
+
+      toast(errorMessage, {
         type: 'error',
-        toastId: 'loginError',
       });
     });
   };
@@ -85,7 +95,7 @@ const Login: FunctionComponent = () => {
   return (
     <>
       <Helmet>
-        <title>Taskmaster | Log in</title>
+        <title>Taskmaster | Sign up</title>
       </Helmet>
       <div className="container">
         <div className="row justify-content-center align-items-center vh-100">
@@ -99,14 +109,9 @@ const Login: FunctionComponent = () => {
               <input type="password" id="inputPassword" className={`form-control ${request.isAuthorised ? '' : 'is-invalid'}`} placeholder="Password" name="password" value={data.password} onChange={handleChange} required />
               <label htmlFor="inputPassword">Password</label>
             </div>
-            <div className="form-group custom-control custom-checkbox">
-              <input type="checkbox" className="custom-control-input" id="inputRemember" name="remember" checked={data.remember} onChange={handleChange} />
-              <label className="custom-control-label" htmlFor="inputRemember">Remember me</label>
-            </div>
             <button className="btn btn-lg btn-primary btn-block" type="submit">
-              {request.isLoading ? <FontAwesomeIcon icon="circle-notch" spin /> : 'Log in'}
+              {request.isLoading ? <FontAwesomeIcon icon="circle-notch" spin /> : 'Sign up'}
             </button>
-            <Link to="/signup" className="btn btn-outline-secondary btn-block btn-sm">Sign up</Link>
           </form>
         </div>
       </div>
@@ -114,4 +119,4 @@ const Login: FunctionComponent = () => {
   );
 };
 
-export default Login;
+export default Signup;

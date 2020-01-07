@@ -16,6 +16,7 @@ import moment from 'moment';
 import Home from 'components/Home';
 import Task from 'components/Task';
 import Login from 'components/Login';
+import Signup from 'components/Signup';
 import NotFound from 'components/NotFound';
 import {
   AuthContext,
@@ -105,6 +106,9 @@ const App: FunctionComponent = () => {
           </PrivateRoute>
           <PublicRoute path="/login">
             <Login />
+          </PublicRoute>
+          <PublicRoute path="/signup">
+            <Signup />
           </PublicRoute>
           <Route path="*">
             <NotFound />
