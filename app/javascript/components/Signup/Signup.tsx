@@ -58,8 +58,8 @@ const Signup: FunctionComponent = () => {
         type: 'login',
         payload: {
           user: {
-            id: response.data.id,
             email: response.data.email,
+            name: response.data.name,
           },
           token: response.headers.authorization,
         },

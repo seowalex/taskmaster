@@ -43,8 +43,8 @@ const Navbar: FunctionComponent<NavbarProps> = (props) => {
       <ul className="navbar-nav ml-auto">
         <li className={`nav-item dropdown ${styles.profileDropdown}`}>
           <button type="button" className="btn btn-link nav-link dropdown-toggle" id="navbarDropdown" data-toggle="dropdown">
-            <img src={`https://api.adorable.io/avatars/300/${auth.user ? auth.user.email.substring(0, auth.user.email.indexOf('@')) : ''}@adorable.io.png`} alt="Profile" className={`${styles.profileImg} rounded-circle`} />
-            <span className="d-none d-sm-inline">{auth.user ? auth.user.email.substring(0, auth.user.email.indexOf('@')) : ''}</span>
+            <img src={`https://api.adorable.io/avatars/300/${auth.user ? auth.user.name : ''}@adorable.io.png`} alt="Profile" className={`${styles.profileImg} rounded-circle`} />
+            <span className="d-none d-sm-inline">{auth.user ? auth.user.name : ''}</span>
           </button>
           <div className="dropdown-menu dropdown-menu-right">
             <button type="button" className="dropdown-item">

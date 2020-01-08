@@ -2,8 +2,8 @@ import { createContext, Reducer, Dispatch } from 'react';
 
 interface AuthState {
   user: {
-    id: number;
     email: string;
+    name: string;
   } | null;
   token: string | null;
 }
@@ -12,8 +12,8 @@ interface AuthAction {
   readonly type: string;
   readonly payload?: {
     readonly user: {
-      readonly id: number;
       readonly email: string;
+      readonly name: string;
     };
     readonly token: string;
   };

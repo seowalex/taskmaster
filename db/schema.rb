@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_01_094837) do
+ActiveRecord::Schema.define(version: 2020_01_01_085222) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -43,11 +43,11 @@ ActiveRecord::Schema.define(version: 2020_01_01_094837) do
   end
 
   create_table "tasks", force: :cascade do |t|
-    t.text "title", default: ""
-    t.text "description", default: ""
-    t.boolean "completed", default: false
-    t.integer "priority", default: 3
-    t.integer "position"
+    t.text "title", default: "", null: false
+    t.text "description", default: "", null: false
+    t.boolean "completed", default: false, null: false
+    t.integer "priority", default: 3, null: false
+    t.integer "position", null: false
     t.date "due_date"
     t.bigint "user_id", null: false
     t.datetime "created_at", precision: 6, null: false
@@ -58,9 +58,11 @@ ActiveRecord::Schema.define(version: 2020_01_01_094837) do
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
+    t.string "name", default: ""
+    t.json "settings", default: {}
+    t.string "jti", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.string "jti", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["jti"], name: "index_users_on_jti", unique: true
   end
