@@ -63,7 +63,11 @@ const Signup: FunctionComponent = () => {
             id: response.data.id,
             email: response.data.email,
             name: response.data.name,
-            settings: response.data.settings,
+            settings: {
+              hideCompleted: false,
+              addToBottom: false,
+              moveToBottom: false,
+            },
           },
           token: response.headers.authorization,
         },
