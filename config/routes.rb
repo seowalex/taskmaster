@@ -14,7 +14,6 @@ Rails.application.routes.draw do
 
   namespace :api, defaults: { format: :json } do
     jsonapi_resources :tasks
-    jsonapi_resources :users
   end
 
   root 'home#index'

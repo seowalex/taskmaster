@@ -89,25 +89,27 @@ const Login: FunctionComponent = () => {
       </Helmet>
       <div className="container">
         <div className="row justify-content-center align-items-center vh-100">
-          <form className="col-12 col-sm-8 col-md-6 col-xl-4" onSubmit={handleSubmit}>
-            <h1 className="display-4 text-center mb-5">Taskmaster</h1>
-            <div className={`form-group ${styles.formLabelGroup}`}>
-              <input type="email" id="inputEmail" className={`form-control ${request.isAuthorised ? '' : 'is-invalid'}`} placeholder="Email address" name="email" value={data.email} onChange={handleChange} required autoFocus />
-              <label htmlFor="inputEmail">Email address</label>
-            </div>
-            <div className={`form-group ${styles.formLabelGroup}`}>
-              <input type="password" id="inputPassword" className={`form-control ${request.isAuthorised ? '' : 'is-invalid'}`} placeholder="Password" name="password" value={data.password} onChange={handleChange} required />
-              <label htmlFor="inputPassword">Password</label>
-            </div>
-            <div className="form-group custom-control custom-checkbox">
-              <input type="checkbox" className="custom-control-input" id="inputRemember" name="remember" checked={data.remember} onChange={handleChange} />
-              <label className="custom-control-label" htmlFor="inputRemember">Remember me</label>
-            </div>
-            <button className="btn btn-lg btn-primary btn-block" type="submit">
-              {request.isLoading ? <FontAwesomeIcon icon="circle-notch" spin /> : 'Log in'}
-            </button>
-            <Link to="/signup" className="btn btn-outline-secondary btn-block btn-sm">Sign up</Link>
-          </form>
+          <div className="col-12 col-sm-8 col-md-6 col-xl-4 mt-5 mb-5">
+            <form onSubmit={handleSubmit}>
+              <h1 className="display-4 text-center mb-5">Taskmaster</h1>
+              <div className={`form-group ${styles.formLabelGroup}`}>
+                <input type="email" id="inputEmail" className={`form-control ${request.isAuthorised ? '' : 'is-invalid'}`} placeholder="Email address" name="email" value={data.email} onChange={handleChange} required autoFocus />
+                <label htmlFor="inputEmail">Email address</label>
+              </div>
+              <div className={`form-group ${styles.formLabelGroup}`}>
+                <input type="password" id="inputPassword" className={`form-control ${request.isAuthorised ? '' : 'is-invalid'}`} placeholder="Password" name="password" value={data.password} onChange={handleChange} required />
+                <label htmlFor="inputPassword">Password</label>
+              </div>
+              <div className="form-group custom-control custom-checkbox">
+                <input type="checkbox" className="custom-control-input" id="inputRemember" name="remember" checked={data.remember} onChange={handleChange} />
+                <label className="custom-control-label" htmlFor="inputRemember">Remember me</label>
+              </div>
+              <button className="btn btn-lg btn-primary btn-block" type="submit">
+                {request.isLoading ? <FontAwesomeIcon icon="circle-notch" spin /> : 'Log in'}
+              </button>
+              <Link to="/signup" className="btn btn-outline-secondary btn-block btn-sm">Sign up</Link>
+            </form>
+          </div>
         </div>
       </div>
     </>

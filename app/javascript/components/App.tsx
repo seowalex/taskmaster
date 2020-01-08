@@ -15,6 +15,7 @@ import { toast, Slide } from 'react-toastify';
 import moment from 'moment';
 import Home from 'components/Home';
 import Task from 'components/Task';
+import Profile from 'components/Profile';
 import Login from 'components/Login';
 import Signup from 'components/Signup';
 import NotFound from 'components/NotFound';
@@ -103,6 +104,9 @@ const App: FunctionComponent = () => {
           </PrivateRoute>
           <PrivateRoute path="/tasks/:id">
             <Task />
+          </PrivateRoute>
+          <PrivateRoute path="/profile">
+            <Profile />
           </PrivateRoute>
           <PublicRoute path="/login">
             <Login />

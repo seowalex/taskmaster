@@ -17,6 +17,7 @@
       "components/Login": ["components/Login/Login"],
       "components/Navbar": ["components/Navbar/Navbar"],
       "components/NotFound": ["components/NotFound/NotFound"],
+      "components/Profile": ["components/Profile/Profile"],
       "components/Signup": ["components/Signup/Signup"],
       "components/Task": ["components/Task/Task"]
     }

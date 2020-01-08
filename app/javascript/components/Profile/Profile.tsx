@@ -10,17 +10,18 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 import { AuthContext } from 'contexts/AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import styles from './signup.module.scss';
+import styles from './profile.module.scss';
 
-const Signup: FunctionComponent = () => {
+const Profile: FunctionComponent = () => {
   const history = useHistory();
-  const { dispatchAuth } = useContext(AuthContext);
+  const { auth, dispatchAuth } = useContext(AuthContext);
   const [request, setRequest] = useState({
     isAuthorised: true,
     isLoading: false,
   });
   const [data, setData] = useState({
-    email: '',
+    name: auth.user ? auth.user.name : '',
+    currentPassword: '',
     password: '',
     passwordConfirmation: '',
   });
@@ -47,7 +48,8 @@ const Signup: FunctionComponent = () => {
 
     axios.post('/api/signup', {
       user: {
-        email: data.email,
+        name: data.name,
+        currentPassword: data.currentPassword,
         password: data.password,
         password_confirmation: data.passwordConfirmation,
       },
@@ -76,9 +78,9 @@ const Signup: FunctionComponent = () => {
 
       let errorMessage = '';
 
-      if (error.response.data.errors.email) {
-        for (const msg of error.response.data.errors.email) {
-          errorMessage += `Email ${msg}\n`;
+      if (error.response.data.errors.name) {
+        for (const msg of error.response.data.errors.name) {
+          errorMessage += `Name ${msg}\n`;
         }
       }
 
@@ -103,16 +105,17 @@ const Signup: FunctionComponent = () => {
   return (
     <>
       <Helmet>
-        <title>Taskmaster | Sign up</title>
+        <title>{auth.user && auth.user.name !== '' ? `Taskmaster | ${auth.user.name}` : 'Taskmaster'}</title>
       </Helmet>
       <div className="container">
         <div className="row justify-content-center align-items-center vh-100">
-          <div className="col-12 col-sm-8 col-md-6 col-xl-4 mt-5 mb-5">
-            <form onSubmit={handleSubmit}>
-              <h1 className="display-4 text-center mb-5">Taskmaster</h1>
+          <div className="col-12 mt-5 mb-5 d-flex flex-column align-items-center">
+            <img src={`https://api.adorable.io/avatars/300/${auth.user ? auth.user.name : ''}@adorable.io.png`} alt="Profile" className={styles.profileImg} />
+            <form className="w-100" onSubmit={handleSubmit}>
+              <h1 className={styles.email}>{auth.user ? auth.user.email : ''}</h1>
               <div className={`form-group ${styles.formLabelGroup}`}>
-                <input type="email" id="inputEmail" className={`form-control ${request.isAuthorised ? '' : 'is-invalid'}`} placeholder="Email address" name="email" value={data.email} onChange={handleChange} required autoFocus />
-                <label htmlFor="inputEmail">Email address</label>
+                <input type="text" id="inputName" className={`form-control ${request.isAuthorised ? '' : 'is-invalid'}`} placeholder="Name" name="name" value={data.name} onChange={handleChange} required />
+                <label htmlFor="inputName">Name</label>
               </div>
               <div className={`form-group ${styles.formLabelGroup}`}>
                 <input type="password" id="inputPassword" className={`form-control ${request.isAuthorised ? '' : 'is-invalid'}`} placeholder="Password" name="password" value={data.password} onChange={handleChange} required />
@@ -133,4 +136,4 @@ const Signup: FunctionComponent = () => {
   );
 };
 
-export default Signup;
+export default Profile;

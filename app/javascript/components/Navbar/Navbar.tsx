@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useContext, MouseEvent } from 'react';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { AuthContext } from 'contexts/AuthContext';
@@ -47,10 +47,10 @@ const Navbar: FunctionComponent<NavbarProps> = (props) => {
             <span className="d-none d-sm-inline">{auth.user ? auth.user.name : ''}</span>
           </button>
           <div className="dropdown-menu dropdown-menu-right">
-            <button type="button" className="dropdown-item">
+            <Link to="/profile" className="dropdown-item">
               <FontAwesomeIcon icon="user" className="mr-2" />
               Profile
-            </button>
+            </Link>
             <button type="button" className="dropdown-item">
               <FontAwesomeIcon icon="cog" className="mr-2" />
               Settings
