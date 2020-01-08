@@ -207,16 +207,24 @@
 }
 
 .taskTitle {
+  overflow-wrap: break-word;
+  word-break: break-word;
   margin: auto 2rem auto 0;
 }
 
 .taskTags {
   text-align: right;
-  max-width: 12rem;
+  max-width: 8rem;
   margin-left: auto;
 
-  span::before {
-    content: '#';
+  span {
+    max-width: 6rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &::before {
+      content: '#';
+    }
   }
 
   :global(.badge-secondary) {

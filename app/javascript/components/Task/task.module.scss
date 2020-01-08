@@ -143,6 +143,8 @@
     background-color: transparent;
     border: none;
     outline: none;
+    max-width: 6rem;
+    text-overflow: ellipsis;
   }
 }
 
