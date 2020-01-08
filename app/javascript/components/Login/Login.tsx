@@ -64,6 +64,11 @@ const Login: FunctionComponent = () => {
             id: response.data.id,
             email: response.data.email,
             name: response.data.name,
+            settings: Object.entries(response.data.settings).length ? response.data.settings : {
+              hideCompleted: false,
+              addToBottom: false,
+              moveToBottom: false,
+            },
           },
           token: response.headers.authorization,
         },

@@ -5,6 +5,11 @@ interface AuthState {
     id: number;
     email: string;
     name: string;
+    settings: {
+      hideCompleted: boolean;
+      addToBottom: boolean;
+      moveToBottom: boolean;
+    };
   } | null;
   token: string | null;
 }
@@ -16,6 +21,11 @@ interface AuthAction {
       readonly id: number;
       readonly email: string;
       readonly name: string;
+      readonly settings: {
+        readonly hideCompleted: boolean;
+        readonly addToBottom: boolean;
+        readonly moveToBottom: boolean;
+      };
     };
     readonly token: string;
   };

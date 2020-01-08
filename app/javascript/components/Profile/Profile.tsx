@@ -110,8 +110,7 @@ const Profile: FunctionComponent = () => {
             type: 'login',
             payload: {
               user: {
-                id: auth.user.id,
-                email: auth.user.email,
+                ...auth.user,
                 name: response.data.data.attributes.name,
               },
               token: auth.token,
