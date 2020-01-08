@@ -25,13 +25,6 @@ module.exports = {
     '@typescript-eslint',
   ],
   rules: {
-    'no-nested-ternary': ['off'],
-    'no-param-reassign': ['error',
-      {
-        'props': false
-      }
-    ],
-    'no-restricted-syntax': ['off'],
     'import/extensions': [
       'error',
       'always',
@@ -40,6 +33,22 @@ module.exports = {
         tsx: 'never',
         js: 'never',
         jsx: 'never',
+      },
+    ],
+    'no-nested-ternary': ['off'],
+    'no-restricted-syntax': [
+      'error',
+      {
+        selector: 'ForInStatement',
+        message: 'for..in loops iterate over the entire prototype chain, which is virtually never what you want. Use Object.{keys,values,entries}, and iterate over the resulting array.',
+      },
+      {
+        selector: 'LabeledStatement',
+        message: 'Labels are a form of GOTO; using them makes code confusing and hard to maintain and understand.',
+      },
+      {
+        selector: 'WithStatement',
+        message: '`with` is disallowed in strict mode because it makes code impossible to predict and optimize.',
       },
     ],
     '@typescript-eslint/camelcase': ['error', {
