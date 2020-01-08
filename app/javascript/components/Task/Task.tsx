@@ -226,9 +226,7 @@ const Task: FunctionComponent = () => {
   };
 
   const handleRemoveTag = (e: MouseEvent<Element>): void => {
-    task.attributes['tag-list'] = task.attributes['tag-list'].filter((tag: string) => {
-      return tag !== e.currentTarget.getAttribute('data-tag');
-    });
+    task.attributes['tag-list'] = task.attributes['tag-list'].filter((tag: string) => tag !== e.currentTarget.getAttribute('data-tag'));
     setTask({ ...task });
   };
 

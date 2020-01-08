@@ -42,6 +42,9 @@ module.exports = {
         jsx: 'never',
       },
     ],
+    '@typescript-eslint/camelcase': ['error', {
+      allow: ['password_confirmation'],
+    }],
     'react/jsx-filename-extension': [
       'warn',
       {

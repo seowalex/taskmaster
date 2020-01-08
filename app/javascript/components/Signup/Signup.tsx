@@ -22,6 +22,7 @@ const Signup: FunctionComponent = () => {
   const [data, setData] = useState({
     email: '',
     password: '',
+    passwordConfirmation: '',
   });
 
   const handleChange = (e: FormEvent<HTMLInputElement>): void => {
@@ -48,6 +49,7 @@ const Signup: FunctionComponent = () => {
       user: {
         email: data.email,
         password: data.password,
+        password_confirmation: data.passwordConfirmation,
       },
     }, {
       headers: { 'Content-Type': 'application/json' },
@@ -86,6 +88,12 @@ const Signup: FunctionComponent = () => {
         }
       }
 
+      if (error.response.data.errors.password_confirmation) {
+        for (const msg of error.response.data.errors.password_confirmation) {
+          errorMessage += `Password confirmation ${msg}\n`;
+        }
+      }
+
       toast(errorMessage, {
         type: 'error',
       });
@@ -108,6 +116,10 @@ const Signup: FunctionComponent = () => {
             <div className={`form-group ${styles.formLabelGroup}`}>
               <input type="password" id="inputPassword" className={`form-control ${request.isAuthorised ? '' : 'is-invalid'}`} placeholder="Password" name="password" value={data.password} onChange={handleChange} required />
               <label htmlFor="inputPassword">Password</label>
+            </div>
+            <div className={`form-group ${styles.formLabelGroup}`}>
+              <input type="password" id="inputPasswordConfirmation" className={`form-control ${request.isAuthorised ? '' : 'is-invalid'}`} placeholder="Confirm Password" name="passwordConfirmation" value={data.passwordConfirmation} onChange={handleChange} required />
+              <label htmlFor="inputPasswordConfirmation">Confirm Password</label>
             </div>
             <button className="btn btn-lg btn-primary btn-block" type="submit">
               {request.isLoading ? <FontAwesomeIcon icon="circle-notch" spin /> : 'Sign up'}
