@@ -20,6 +20,16 @@
   white-space: pre-wrap;
 }
 
+.back {
+  font-size: 2rem;
+  margin: 0 1rem;
+  color: #343a40;
+
+  &:hover {
+    color: #121416;
+  }
+}
+
 .profileImg {
   border-radius: 50%;
   width: 160px;

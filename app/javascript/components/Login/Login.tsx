@@ -53,12 +53,15 @@ const Login: FunctionComponent = () => {
         password: data.password,
       },
     }, {
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+      },
     }).then((response) => {
       dispatchAuth({
         type: data.remember ? 'login' : 'login_once',
         payload: {
           user: {
+            id: response.data.id,
             email: response.data.email,
             name: response.data.name,
           },

@@ -52,12 +52,15 @@ const Signup: FunctionComponent = () => {
         password_confirmation: data.passwordConfirmation,
       },
     }, {
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+      },
     }).then((response) => {
       dispatchAuth({
         type: 'login',
         payload: {
           user: {
+            id: response.data.id,
             email: response.data.email,
             name: response.data.name,
           },
