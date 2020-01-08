@@ -136,12 +136,16 @@ const Home: FunctionComponent = () => {
       params['filter[search]'] = search.query;
     }
 
+    const { CancelToken } = axios;
+    const source = CancelToken.source();
+
     axios.get('/api/tasks', {
       params,
       headers: {
         'Content-Type': 'application/vnd.api+json',
         Authorization: auth.token,
       },
+      cancelToken: source.token,
     }).then((response) => {
       setTasks(response.data.data);
       setSearch({
@@ -160,6 +164,8 @@ const Home: FunctionComponent = () => {
         });
       }
     });
+
+    return (): void => source.cancel();
   }, [auth, sort, useDebounce(search.query, 500)]);
 
   const handleSearch = (e: ChangeEvent<HTMLInputElement>): void => {

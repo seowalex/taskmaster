@@ -89,11 +89,15 @@ const Task: FunctionComponent = () => {
   });
 
   useEffect(() => {
+    const { CancelToken } = axios;
+    const source = CancelToken.source();
+
     axios.get(`/api/tasks/${id}`, {
       headers: {
         'Content-Type': 'application/vnd.api+json',
         Authorization: auth.token,
       },
+      cancelToken: source.token,
     }).then((response) => {
       setTask(response.data.data);
     }).catch((error) => {
@@ -110,9 +114,14 @@ const Task: FunctionComponent = () => {
         });
       }
     });
+
+    return (): void => source.cancel();
   }, [auth]);
 
   useEffect(() => {
+    const { CancelToken } = axios;
+    const source = CancelToken.source();
+
     if (task) {
       axios.patch(task.links.self, {
         data: {
@@ -125,6 +134,7 @@ const Task: FunctionComponent = () => {
           'Content-Type': 'application/vnd.api+json',
           Authorization: auth.token,
         },
+        cancelToken: source.token,
       }).then(() => {
         setSaving(false);
       }).catch((error) => {
@@ -134,6 +144,8 @@ const Task: FunctionComponent = () => {
         });
       });
     }
+
+    return (): void => source.cancel();
   }, [useDebounce(task, 500)]);
 
   useEffect(() => {
