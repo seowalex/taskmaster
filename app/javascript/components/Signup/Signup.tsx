@@ -52,11 +52,11 @@ const Signup: FunctionComponent = () => {
         password: data.password,
         password_confirmation: data.passwordConfirmation,
         name: data.email.substring(0, data.email.lastIndexOf('@')),
-        settings: JSON.stringify({
+        settings: {
           hideCompleted: false,
           addToBottom: false,
           sort: 'position',
-        }),
+        },
       },
     }, {
       headers: {
@@ -70,7 +70,7 @@ const Signup: FunctionComponent = () => {
             id: response.data.id,
             email: response.data.email,
             name: response.data.name,
-            settings: JSON.parse(response.data.settings),
+            settings: response.data.settings,
           },
           token: response.headers.authorization,
         },

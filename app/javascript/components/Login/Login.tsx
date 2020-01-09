@@ -65,7 +65,7 @@ const Login: FunctionComponent = () => {
             id: response.data.id,
             email: response.data.email,
             name: response.data.name,
-            settings: JSON.parse(response.data.settings),
+            settings: response.data.settings,
           },
           token: response.headers.authorization,
         },
