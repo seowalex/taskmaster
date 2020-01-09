@@ -1,8 +1,9 @@
 import React, {
   FunctionComponent,
-  FormEvent,
   useState,
   useContext,
+  FormEvent,
+  ChangeEvent,
 } from 'react';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
@@ -27,10 +28,10 @@ const Login: FunctionComponent = () => {
     remember: true,
   });
 
-  const handleChange = (e: FormEvent<HTMLInputElement>): void => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setData({
       ...data,
-      [e.currentTarget.name]: e.currentTarget.type === 'checkbox' ? e.currentTarget.checked : e.currentTarget.value,
+      [e.currentTarget.id]: e.currentTarget.type === 'checkbox' ? e.currentTarget.checked : e.currentTarget.value,
     });
 
     setRequest({
@@ -97,16 +98,16 @@ const Login: FunctionComponent = () => {
             <form onSubmit={handleSubmit}>
               <h1 className="display-4 text-center mb-5">Taskmaster</h1>
               <div className={`form-group ${styles.formLabelGroup}`}>
-                <input type="email" id="inputEmail" className={`form-control ${request.isAuthorised ? '' : 'is-invalid'}`} placeholder="Email address" name="email" value={data.email} onChange={handleChange} required autoFocus />
-                <label htmlFor="inputEmail">Email address</label>
+                <input type="email" id="email" className={`form-control ${request.isAuthorised ? '' : 'is-invalid'}`} placeholder="Email address" value={data.email} onChange={handleChange} required autoFocus />
+                <label htmlFor="email">Email address</label>
               </div>
               <div className={`form-group ${styles.formLabelGroup}`}>
-                <input type="password" id="inputPassword" className={`form-control ${request.isAuthorised ? '' : 'is-invalid'}`} placeholder="Password" name="password" value={data.password} onChange={handleChange} required />
-                <label htmlFor="inputPassword">Password</label>
+                <input type="password" id="password" className={`form-control ${request.isAuthorised ? '' : 'is-invalid'}`} placeholder="Password" value={data.password} onChange={handleChange} required />
+                <label htmlFor="password">Password</label>
               </div>
               <div className="form-group custom-control custom-checkbox">
-                <input type="checkbox" className="custom-control-input" id="inputRemember" name="remember" checked={data.remember} onChange={handleChange} />
-                <label className="custom-control-label" htmlFor="inputRemember">Remember me</label>
+                <input type="checkbox" className="custom-control-input" id="remember" checked={data.remember} onChange={handleChange} />
+                <label className="custom-control-label" htmlFor="remember">Remember me</label>
               </div>
               <button className="btn btn-lg btn-primary btn-block" type="submit">
                 {request.isLoading ? <FontAwesomeIcon icon="circle-notch" spin /> : 'Log in'}

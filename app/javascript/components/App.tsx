@@ -46,10 +46,8 @@ moment.updateLocale('en-GB', {
 const PrivateRoute: FunctionComponent<RouteProps> = ({ children, ...rest }) => {
   const { auth } = useContext(AuthContext);
 
-  if (!localStorage.getItem('user') && !auth.user && !auth.token) {
-    auth.user = JSON.parse(localStorage.getItem('user') as string);
-    auth.token = localStorage.getItem('token');
-  }
+  auth.user = auth.user ?? JSON.parse(localStorage.getItem('user') as string);
+  auth.token = auth.token ?? localStorage.getItem('token');
 
   return (
     <Route
@@ -73,10 +71,8 @@ const PrivateRoute: FunctionComponent<RouteProps> = ({ children, ...rest }) => {
 const PublicRoute: FunctionComponent<RouteProps> = ({ children, ...rest }) => {
   const { auth } = useContext(AuthContext);
 
-  if (localStorage.getItem('user') !== null) {
-    auth.user = JSON.parse(localStorage.getItem('user') as string);
-    auth.token = localStorage.getItem('token');
-  }
+  auth.user = auth.user ?? JSON.parse(localStorage.getItem('user') as string);
+  auth.token = auth.token ?? localStorage.getItem('token');
 
   return (
     <Route

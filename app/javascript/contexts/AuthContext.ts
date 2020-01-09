@@ -44,33 +44,19 @@ export const authInitialState = {
 export const authReducer: Reducer<AuthState, AuthAction> = (state, action) => {
   switch (action.type) {
     case 'login': {
-      if (action.payload) {
-        localStorage.setItem('user', JSON.stringify(action.payload.user));
-        localStorage.setItem('token', action.payload.token);
-
-        return {
-          user: action.payload.user,
-          token: action.payload.token,
-        };
-      }
+      localStorage.setItem('user', JSON.stringify(action.payload?.user));
+      localStorage.setItem('token', action.payload?.token as string);
 
       return {
-        user: null,
-        token: null,
+        user: action.payload?.user ?? null,
+        token: action.payload?.token ?? null,
       };
     }
 
     case 'login_once': {
-      if (action.payload) {
-        return {
-          user: action.payload.user,
-          token: action.payload.token,
-        };
-      }
-
       return {
-        user: null,
-        token: null,
+        user: action.payload?.user ?? null,
+        token: action.payload?.token ?? null,
       };
     }
 

@@ -1,8 +1,9 @@
 import React, {
   FunctionComponent,
-  FormEvent,
   useState,
   useContext,
+  FormEvent,
+  ChangeEvent,
 } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
@@ -25,10 +26,10 @@ const Signup: FunctionComponent = () => {
     passwordConfirmation: '',
   });
 
-  const handleChange = (e: FormEvent<HTMLInputElement>): void => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setData({
       ...data,
-      [e.currentTarget.name]: e.currentTarget.value,
+      [e.currentTarget.id]: e.currentTarget.value,
     });
 
     setRequest({
@@ -86,22 +87,16 @@ const Signup: FunctionComponent = () => {
 
       let errorMessage = '';
 
-      if (error.response.data.errors.email) {
-        for (const msg of error.response.data.errors.email) {
-          errorMessage += `Email ${msg}\n`;
-        }
+      for (const msg of error.response.data.errors.email ?? []) {
+        errorMessage += `Email ${msg}\n`;
       }
 
-      if (error.response.data.errors.password) {
-        for (const msg of error.response.data.errors.password) {
-          errorMessage += `Password ${msg}\n`;
-        }
+      for (const msg of error.response.data.errors.password ?? []) {
+        errorMessage += `Password ${msg}\n`;
       }
 
-      if (error.response.data.errors.password_confirmation) {
-        for (const msg of error.response.data.errors.password_confirmation) {
-          errorMessage += `Password confirmation ${msg}\n`;
-        }
+      for (const msg of error.response.data.errors.password_confirmation ?? []) {
+        errorMessage += `Password confirmation ${msg}\n`;
       }
 
       toast(errorMessage, {
@@ -121,16 +116,16 @@ const Signup: FunctionComponent = () => {
             <form onSubmit={handleSubmit}>
               <h1 className="display-4 text-center mb-5">Taskmaster</h1>
               <div className={`form-group ${styles.formLabelGroup}`}>
-                <input type="email" id="inputEmail" className={`form-control ${request.isAuthorised ? '' : 'is-invalid'}`} placeholder="Email address" name="email" value={data.email} onChange={handleChange} required autoFocus />
-                <label htmlFor="inputEmail">Email address</label>
+                <input type="email" id="email" className={`form-control ${request.isAuthorised ? '' : 'is-invalid'}`} placeholder="Email address" value={data.email} onChange={handleChange} required autoFocus />
+                <label htmlFor="email">Email address</label>
               </div>
               <div className={`form-group ${styles.formLabelGroup}`}>
-                <input type="password" id="inputPassword" className={`form-control ${request.isAuthorised ? '' : 'is-invalid'}`} placeholder="Password" name="password" value={data.password} onChange={handleChange} required />
-                <label htmlFor="inputPassword">Password</label>
+                <input type="password" id="password" className={`form-control ${request.isAuthorised ? '' : 'is-invalid'}`} placeholder="Password" value={data.password} onChange={handleChange} required />
+                <label htmlFor="password">Password</label>
               </div>
               <div className={`form-group ${styles.formLabelGroup}`}>
-                <input type="password" id="inputPasswordConfirmation" className={`form-control ${request.isAuthorised ? '' : 'is-invalid'}`} placeholder="Confirm Password" name="passwordConfirmation" value={data.passwordConfirmation} onChange={handleChange} required />
-                <label htmlFor="inputPasswordConfirmation">Confirm Password</label>
+                <input type="password" id="passwordConfirmation" className={`form-control ${request.isAuthorised ? '' : 'is-invalid'}`} placeholder="Confirm Password" value={data.passwordConfirmation} onChange={handleChange} required />
+                <label htmlFor="passwordConfirmation">Confirm Password</label>
               </div>
               <button className="btn btn-lg btn-primary btn-block" type="submit">
                 {request.isLoading ? <FontAwesomeIcon icon="circle-notch" spin /> : 'Sign up'}

@@ -1,8 +1,9 @@
 import React, {
   FunctionComponent,
-  FormEvent,
   useState,
   useContext,
+  FormEvent,
+  ChangeEvent,
 } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
@@ -41,15 +42,15 @@ const Profile: FunctionComponent = () => {
     isLoading: false,
   });
   const [data, setData] = useState({
-    name: auth.user ? auth.user.name : '',
+    name: auth.user?.name,
     password: '',
     passwordConfirmation: '',
   });
 
-  const handleChange = (e: FormEvent<HTMLInputElement>): void => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setData({
       ...data,
-      [e.currentTarget.name]: e.currentTarget.value,
+      [e.currentTarget.id]: e.currentTarget.value,
     });
 
     setRequest({
@@ -62,7 +63,7 @@ const Profile: FunctionComponent = () => {
   const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
 
-    if (auth.user && (data.name !== auth.user.name || (data.password !== '' && data.password === data.passwordConfirmation))) {
+    if (data.name !== auth.user?.name || (data.password !== '' && data.password === data.passwordConfirmation)) {
       setRequest({
         ...request,
         isLoading: true,
@@ -70,7 +71,7 @@ const Profile: FunctionComponent = () => {
 
       const attributes: UserAttributes = {};
 
-      if (data.name !== auth.user.name) {
+      if (data.name !== auth.user?.name) {
         attributes.name = data.name;
       }
 
@@ -78,9 +79,9 @@ const Profile: FunctionComponent = () => {
         attributes.password = data.password;
       }
 
-      axios.patch(`/api/users/${auth.user.id}`, {
+      axios.patch(`/api/users/${auth.user?.id}`, {
         data: {
-          id: auth.user.id,
+          id: auth.user?.id,
           type: 'users',
           attributes,
         },
@@ -143,7 +144,7 @@ const Profile: FunctionComponent = () => {
   return (
     <>
       <Helmet>
-        <title>{auth.user && auth.user.name !== '' ? `Taskmaster | ${auth.user.name}` : 'Taskmaster'}</title>
+        <title>{auth.user?.name ? `Taskmaster | ${auth.user.name}` : 'Taskmaster'}</title>
       </Helmet>
       <div className="container">
         <div className="row justify-content-center">
@@ -154,20 +155,20 @@ const Profile: FunctionComponent = () => {
               </Link>
             </Navbar>
             <div className="mt-5 mb-5 d-flex flex-column align-items-center">
-              <img src={`https://api.adorable.io/avatars/300/${auth.user ? auth.user.name : ''}@adorable.io.png`} alt="Profile" className={styles.profileImg} />
+              <img src={`https://api.adorable.io/avatars/300/${auth.user?.name}@adorable.io.png`} alt="Profile" className={styles.profileImg} />
               <form className="w-100" onSubmit={handleSubmit}>
-                <h1 className={styles.email}>{auth.user ? auth.user.email : ''}</h1>
+                <h1 className={styles.email}>{auth.user?.email}</h1>
                 <div className={`form-group ${styles.formLabelGroup}`}>
-                  <input type="text" id="inputName" className="form-control" placeholder="Name" name="name" value={data.name} onChange={handleChange} />
-                  <label htmlFor="inputName">Name</label>
+                  <input type="text" id="name" className="form-control" placeholder="Name" value={data.name} onChange={handleChange} />
+                  <label htmlFor="name">Name</label>
                 </div>
                 <div className={`form-group ${styles.formLabelGroup}`}>
-                  <input type="password" id="inputPassword" className={`form-control ${request.isPassword ? '' : 'is-invalid'}`} placeholder="New Password" name="password" value={data.password} onChange={handleChange} />
-                  <label htmlFor="inputPassword">New Password</label>
+                  <input type="password" id="password" className={`form-control ${request.isPassword ? '' : 'is-invalid'}`} placeholder="New Password" value={data.password} onChange={handleChange} />
+                  <label htmlFor="password">New Password</label>
                 </div>
                 <div className={`form-group ${styles.formLabelGroup}`}>
-                  <input type="password" id="inputPasswordConfirmation" className={`form-control ${request.isPasswordConfirmation ? '' : 'is-invalid'}`} placeholder="Confirm New Password" name="passwordConfirmation" value={data.passwordConfirmation} onChange={handleChange} />
-                  <label htmlFor="inputPasswordConfirmation">Confirm New Password</label>
+                  <input type="password" id="passwordConfirmation" className={`form-control ${request.isPasswordConfirmation ? '' : 'is-invalid'}`} placeholder="Confirm New Password" value={data.passwordConfirmation} onChange={handleChange} />
+                  <label htmlFor="passwordConfirmation">Confirm New Password</label>
                 </div>
                 <button className="btn btn-lg btn-primary btn-block" type="submit">
                   {request.isLoading ? <FontAwesomeIcon icon="circle-notch" spin /> : 'Update Profile'}

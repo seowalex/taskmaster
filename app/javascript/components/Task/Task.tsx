@@ -116,7 +116,7 @@ const Task: FunctionComponent = () => {
     });
 
     return (): void => source.cancel();
-  }, [auth]);
+  }, [auth.token]);
 
   useEffect(() => {
     const { CancelToken } = axios;

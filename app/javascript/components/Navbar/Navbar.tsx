@@ -31,11 +31,10 @@ interface Error {
   };
 }
 
-const Navbar: FunctionComponent<NavbarProps> = (props) => {
-  const { className, children } = props;
+const Navbar: FunctionComponent<NavbarProps> = ({ className, children }) => {
   const history = useHistory();
   const { auth, dispatchAuth } = useContext(AuthContext);
-  const [settings, setSettings] = useState(auth.user ? auth.user.settings : {
+  const [settings, setSettings] = useState(auth.user?.settings ?? {
     hideCompleted: false,
     addToBottom: false,
     sort: 'custom',
@@ -49,39 +48,37 @@ const Navbar: FunctionComponent<NavbarProps> = (props) => {
   };
 
   const handleSettingsSave = (): void => {
-    if (auth.user && auth.token) {
-      axios.patch(`/api/users/${auth.user.id}`, {
-        data: {
-          id: auth.user.id,
-          type: 'users',
-          attributes: {
-            settings,
-          },
+    axios.patch(`/api/users/${auth.user?.id}`, {
+      data: {
+        id: auth.user?.id,
+        type: 'users',
+        attributes: {
+          settings,
         },
-      }, {
-        headers: {
-          'Content-Type': 'application/vnd.api+json',
-          Authorization: auth.token,
-        },
-      }).then((response) => {
-        if (auth.user && auth.token) {
-          dispatchAuth({
-            type: 'login',
-            payload: {
-              user: {
-                ...auth.user,
-                settings: response.data.data.attributes.settings,
-              },
-              token: auth.token,
+      },
+    }, {
+      headers: {
+        'Content-Type': 'application/vnd.api+json',
+        Authorization: auth.token,
+      },
+    }).then((response) => {
+      if (auth.user && auth.token) {
+        dispatchAuth({
+          type: 'login',
+          payload: {
+            user: {
+              ...auth.user,
+              settings: response.data.data.attributes.settings,
             },
-          });
-        }
-      }).catch((error) => {
-        toast(error.response.data.errors.map((err: Error): string => err.detail?.charAt(0).toUpperCase() as string + err.detail?.substring(1) as string).join('\n'), {
-          type: 'error',
+            token: auth.token,
+          },
         });
+      }
+    }).catch((error) => {
+      toast(error.response.data.errors.map((err: Error): string => err.detail?.charAt(0).toUpperCase() as string + err.detail?.substring(1) as string).join('\n'), {
+        type: 'error',
       });
-    }
+    });
   };
 
   const handleLogout = (e: MouseEvent<HTMLButtonElement>): void => {
@@ -113,8 +110,8 @@ const Navbar: FunctionComponent<NavbarProps> = (props) => {
         <ul className="navbar-nav ml-auto">
           <li className={`nav-item dropdown ${styles.profileDropdown}`}>
             <button type="button" className="btn btn-link nav-link dropdown-toggle" id="navbarDropdown" data-toggle="dropdown">
-              <img src={`https://api.adorable.io/avatars/300/${auth.user ? auth.user.name : ''}@adorable.io.png`} alt="Profile" className={`${styles.profileImg} rounded-circle`} />
-              <span className="d-none d-sm-inline">{auth.user ? auth.user.name : ''}</span>
+              <img src={`https://api.adorable.io/avatars/300/${auth.user?.name}@adorable.io.png`} alt="Profile" className={`${styles.profileImg} rounded-circle`} />
+              <span className="d-none d-sm-inline">{auth.user?.name}</span>
             </button>
             <div className="dropdown-menu dropdown-menu-right">
               <Link to="/profile" className="dropdown-item">

@@ -146,7 +146,7 @@ const Home: FunctionComponent = () => {
       sort,
     };
 
-    if (auth.user && auth.user.settings.hideCompleted) {
+    if (auth.user?.settings.hideCompleted) {
       params['filter[completed]'] = false;
     }
 
@@ -184,7 +184,7 @@ const Home: FunctionComponent = () => {
     });
 
     return (): void => source.cancel();
-  }, [auth, useDebounce(search.query, 500)]);
+  }, [auth.token, auth.user?.settings, useDebounce(search.query, 500)]);
 
   const handleSearch = (e: ChangeEvent<HTMLInputElement>): void => {
     setSearch({
@@ -203,43 +203,41 @@ const Home: FunctionComponent = () => {
   const handleSortOrder = (e: ValueType<OptionTypeBase>): void => {
     setSort((e as SortOptions).value);
 
-    if (auth.user && auth.token) {
-      axios.patch(`/api/users/${auth.user.id}`, {
-        data: {
-          id: auth.user.id,
-          type: 'users',
-          attributes: {
-            settings: {
-              ...auth.user.settings,
-              sort: (e as SortOptions).value,
-            },
+    axios.patch(`/api/users/${auth.user?.id}`, {
+      data: {
+        id: auth.user?.id,
+        type: 'users',
+        attributes: {
+          settings: {
+            ...auth.user?.settings,
+            sort: (e as SortOptions).value,
           },
         },
-      }, {
-        headers: {
-          'Content-Type': 'application/vnd.api+json',
-          Authorization: auth.token,
-        },
-      }).then((response) => {
-        if (auth.user && auth.token) {
-          dispatchAuth({
-            type: 'login',
-            payload: {
-              user: {
-                ...auth.user,
-                settings: response.data.data.attributes.settings,
-              },
-              token: auth.token,
+      },
+    }, {
+      headers: {
+        'Content-Type': 'application/vnd.api+json',
+        Authorization: auth.token,
+      },
+    }).then((response) => {
+      if (auth.user && auth.token) {
+        dispatchAuth({
+          type: 'login',
+          payload: {
+            user: {
+              ...auth.user,
+              settings: response.data.data.attributes.settings,
             },
-          });
-        }
-      }).catch((error) => {
-        toast(error.response.data.error, {
-          type: 'error',
-          toastId: 'sortError',
+            token: auth.token,
+          },
         });
+      }
+    }).catch((error) => {
+      toast(error.response.data.error, {
+        type: 'error',
+        toastId: 'sortError',
       });
-    }
+    });
   };
 
   const handleTaskTitle = (e: ChangeEvent<HTMLInputElement>): void => {
@@ -294,12 +292,12 @@ const Home: FunctionComponent = () => {
         'due-date': newTask.dueDate,
       };
 
-      if (auth.user) {
-        if (auth.user.settings.addToBottom) {
-          attributes.position = tasks.findIndex((task: Task) => task.attributes.completed) < 0 ? tasks.length : tasks.findIndex((task: Task) => task.attributes.completed);
-        } else {
-          attributes.position = 0;
-        }
+      if (auth.user?.settings.addToBottom) {
+        attributes.position = tasks.findIndex((task: Task) => task.attributes.completed) < 0
+          ? tasks.length
+          : tasks.findIndex((task: Task) => task.attributes.completed);
+      } else {
+        attributes.position = 0;
       }
 
       axios.post('/api/tasks', {
@@ -319,17 +317,8 @@ const Home: FunctionComponent = () => {
           dueDate: '',
         });
 
-        if (auth.user && auth.user.settings.addToBottom) {
-          setTasks(arrayMove([
-            response.data.data,
-            ...tasks,
-          ], 0, response.data.data.attributes.position));
-        } else {
-          setTasks([
-            response.data.data,
-            ...tasks,
-          ]);
-        }
+        tasks.splice(response.data.data.attributes.position, 0, response.data.data);
+        setTasks([...tasks]);
       }).catch((error) => {
         toast(error.response.data.error, {
           type: 'error',
@@ -342,15 +331,11 @@ const Home: FunctionComponent = () => {
   const handleCheck = (e: ChangeEvent<HTMLInputElement>): void => {
     const newPosition = tasks.findIndex((task: Task) => task.attributes.completed) < 0
       ? tasks.length - 1
-      : e.currentTarget.checked
-        ? tasks.findIndex((task: Task) => task.attributes.completed) - 1
-        : tasks.findIndex((task: Task) => task.attributes.completed);
+      : tasks.findIndex((task: Task) => task.attributes.completed) - +e.currentTarget.checked;
     const changedTaskIndex = tasks.findIndex((task: Task) => task.id === e.currentTarget.id);
     const changedTask = tasks[changedTaskIndex];
 
-    if (changedTask) {
-      changedTask.attributes.completed = e.currentTarget.checked;
-    }
+    changedTask.attributes.completed = e.currentTarget.checked;
 
     if (auth.user && auth.user.settings.hideCompleted) {
       setTasks(tasks.filter((task: Task) => task.id !== e.currentTarget.id));
@@ -380,7 +365,7 @@ const Home: FunctionComponent = () => {
     });
   };
 
-  const handleTagClick = (e: MouseEvent): void => {
+  const handleTagClick = (e: MouseEvent<HTMLSpanElement>): void => {
     e.preventDefault();
 
     setSearch({
