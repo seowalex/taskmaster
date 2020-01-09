@@ -317,7 +317,45 @@ const Home: FunctionComponent = () => {
           dueDate: '',
         });
 
-        tasks.splice(response.data.data.attributes.position, 0, response.data.data);
+        let index = response.data.data.attributes.position;
+
+        if (sort === 'title') {
+          index = tasks
+            .filter((task: Task) => task.attributes.completed === false)
+            .findIndex(
+              (task: Task) => response.data.data.attributes.title < task.attributes.title,
+            ) === -1
+            ? tasks.findIndex((task: Task) => task.attributes.completed === true)
+            : tasks.findIndex(
+              (task: Task) => response.data.data.attributes.title < task.attributes.title,
+            );
+        } else if (sort === 'priority') {
+          index = tasks
+            .filter((task: Task) => task.attributes.completed === false)
+            .findIndex(
+              (task: Task) => response.data.data.attributes.priority < task.attributes.priority,
+            ) === -1
+            ? tasks.findIndex((task: Task) => task.attributes.completed === true)
+            : tasks.findIndex(
+              (task: Task) => response.data.data.attributes.priority < task.attributes.priority,
+            );
+        } else if (sort === 'due-date') {
+          index = tasks
+            .filter((task: Task) => task.attributes.completed === false)
+            .findIndex(
+              (task: Task) => (task.attributes['due-date']
+                ? response.data.data.attributes['due-date'] < task.attributes['due-date']
+                : true),
+            ) === -1
+            ? tasks.findIndex((task: Task) => task.attributes.completed === true)
+            : tasks.findIndex(
+              (task: Task) => (task.attributes['due-date']
+                ? response.data.data.attributes['due-date'] < task.attributes['due-date']
+                : true),
+            );
+        }
+
+        tasks.splice(index, 0, response.data.data);
         setTasks([...tasks]);
       }).catch((error) => {
         toast(error.response.data.error, {
