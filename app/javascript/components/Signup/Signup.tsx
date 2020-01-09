@@ -54,7 +54,7 @@ const Signup: FunctionComponent = () => {
         settings: JSON.stringify({
           hideCompleted: false,
           addToBottom: false,
-          sort: 'custom',
+          sort: 'position',
         }),
       },
     }, {

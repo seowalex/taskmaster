@@ -81,8 +81,8 @@ const Home: FunctionComponent = () => {
     query: '',
     isSearching: false,
   });
-  const [sort, setSort] = useState('position');
   const { auth, dispatchAuth } = useContext(AuthContext);
+  const [sort, setSort] = useState(auth.user ? auth.user.settings.sort : 'position');
   const newTaskTitle = createRef<HTMLInputElement>();
   const dayPickerInput = createRef<DayPickerInput>();
 
@@ -202,6 +202,44 @@ const Home: FunctionComponent = () => {
 
   const handleSortOrder = (e: ValueType<OptionTypeBase>): void => {
     setSort((e as SortOptions).value);
+
+    if (auth.user && auth.token) {
+      axios.patch(`/api/users/${auth.user.id}`, {
+        data: {
+          id: auth.user.id,
+          type: 'users',
+          attributes: {
+            settings: {
+              ...auth.user.settings,
+              sort: (e as SortOptions).value,
+            },
+          },
+        },
+      }, {
+        headers: {
+          'Content-Type': 'application/vnd.api+json',
+          Authorization: auth.token,
+        },
+      }).then((response) => {
+        if (auth.user && auth.token) {
+          dispatchAuth({
+            type: 'login',
+            payload: {
+              user: {
+                ...auth.user,
+                settings: response.data.data.attributes.settings,
+              },
+              token: auth.token,
+            },
+          });
+        }
+      }).catch((error) => {
+        toast(error.response.data.error, {
+          type: 'error',
+          toastId: 'sortError',
+        });
+      });
+    }
   };
 
   const handleTaskTitle = (e: ChangeEvent<HTMLInputElement>): void => {
