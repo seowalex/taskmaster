@@ -42,6 +42,7 @@ interface Task {
 
 interface SearchParams {
   sort: string;
+  'filter[completed]'?: boolean;
   'filter[search]'?: string;
 }
 
@@ -54,6 +55,13 @@ interface PriorityOptions {
   value: number;
   label: string;
   color: string;
+}
+
+interface TaskAttributes {
+  title: string;
+  priority: number;
+  'due-date': string;
+  position?: number;
 }
 
 const Home: FunctionComponent = () => {
@@ -131,6 +139,10 @@ const Home: FunctionComponent = () => {
     const params: SearchParams = {
       sort,
     };
+
+    if (auth.user && auth.user.settings.hideCompleted) {
+      params['filter[completed]'] = false;
+    }
 
     if (search.query.length) {
       params['filter[search]'] = search.query;
@@ -232,15 +244,20 @@ const Home: FunctionComponent = () => {
 
   const handleTaskAdd = (e: KeyboardEvent<HTMLInputElement>): void => {
     if (e.key === 'Enter' && e.currentTarget.value !== '') {
+      const attributes: TaskAttributes = {
+        title: newTask.title,
+        priority: newTask.priority,
+        'due-date': newTask.dueDate,
+      };
+
+      if (auth.user && !auth.user.settings.addToBottom) {
+        attributes.position = 1;
+      }
+
       axios.post('/api/tasks', {
         data: {
           type: 'tasks',
-          attributes: {
-            title: newTask.title,
-            priority: newTask.priority,
-            'due-date': newTask.dueDate,
-            position: 1,
-          },
+          attributes,
         },
       }, {
         headers: {
@@ -253,10 +270,18 @@ const Home: FunctionComponent = () => {
           priority: 3,
           dueDate: '',
         });
-        setTasks([
-          response.data.data,
-          ...tasks,
-        ]);
+
+        if (auth.user && auth.user.settings.addToBottom) {
+          setTasks([
+            ...tasks,
+            response.data.data,
+          ]);
+        } else {
+          setTasks([
+            response.data.data,
+            ...tasks,
+          ]);
+        }
       }).catch((error) => {
         toast(error.response.data.error, {
           type: 'error',
@@ -295,7 +320,11 @@ const Home: FunctionComponent = () => {
       changedTask.attributes.completed = e.currentTarget.checked;
     }
 
-    setTasks([...tasks]);
+    if (auth.user && auth.user.settings.hideCompleted) {
+      setTasks(tasks.filter((task: Task) => task.id !== e.currentTarget.id));
+    } else {
+      setTasks([...tasks]);
+    }
 
     axios.patch(`/api/tasks/${e.currentTarget.id}`, {
       data: {

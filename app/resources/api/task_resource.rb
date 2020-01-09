@@ -1,5 +1,6 @@
 class Api::TaskResource < JSONAPI::Resource
   attributes :title, :description, :completed, :priority, :position, :due_date, :tag_list
+  filter :completed
 
   filter :search, apply: ->(records, value, _options) {
     search = value.join(",").split(" ").select{ |word| word[0] != "#" }.join(" ")
