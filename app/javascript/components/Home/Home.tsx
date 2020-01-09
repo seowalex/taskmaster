@@ -257,7 +257,7 @@ const Home: FunctionComponent = () => {
       };
 
       if (auth.user && !auth.user.settings.addToBottom) {
-        attributes.position = 1;
+        attributes.position = 0;
       }
 
       axios.post('/api/tasks', {
