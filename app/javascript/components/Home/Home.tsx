@@ -184,7 +184,7 @@ const Home: FunctionComponent = () => {
     });
 
     return (): void => source.cancel();
-  }, [auth, sort, useDebounce(search.query, 500)]);
+  }, [auth, useDebounce(search.query, 500)]);
 
   const handleSearch = (e: ChangeEvent<HTMLInputElement>): void => {
     setSearch({

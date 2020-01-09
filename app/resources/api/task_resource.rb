@@ -14,15 +14,15 @@ class Api::TaskResource < JSONAPI::Resource
   }
 
   sort :title, apply: ->(records, direction, _context) do
-    records.order("tasks.completed").order("tasks.title #{direction}")
+    records.order("completed").order("title #{direction}")
   end
 
   sort :priority, apply: ->(records, direction, _context) do
-    records.order("tasks.completed").order("tasks.priority #{direction}")
+    records.order("completed").order("priority #{direction}")
   end
 
   sort :due_date, apply: ->(records, direction, _context) do
-    records.order("tasks.completed").order("tasks.due_date #{direction}")
+    records.order("completed").order("due_date #{direction}")
   end
 
   def self.records(options = {})
