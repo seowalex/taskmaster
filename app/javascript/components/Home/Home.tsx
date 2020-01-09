@@ -294,8 +294,12 @@ const Home: FunctionComponent = () => {
         'due-date': newTask.dueDate,
       };
 
-      if (auth.user && !auth.user.settings.addToBottom) {
-        attributes.position = 0;
+      if (auth.user) {
+        if (auth.user.settings.addToBottom) {
+          attributes.position = tasks.findIndex((task: Task) => task.attributes.completed) < 0 ? tasks.length : tasks.findIndex((task: Task) => task.attributes.completed);
+        } else {
+          attributes.position = 0;
+        }
       }
 
       axios.post('/api/tasks', {
@@ -316,10 +320,10 @@ const Home: FunctionComponent = () => {
         });
 
         if (auth.user && auth.user.settings.addToBottom) {
-          setTasks([
-            ...tasks,
+          setTasks(arrayMove([
             response.data.data,
-          ]);
+            ...tasks,
+          ], 0, response.data.data.attributes.position));
         } else {
           setTasks([
             response.data.data,
@@ -336,7 +340,13 @@ const Home: FunctionComponent = () => {
   };
 
   const handleCheck = (e: ChangeEvent<HTMLInputElement>): void => {
-    const changedTask = tasks.find((task: Task) => task.id === e.currentTarget.id);
+    const newPosition = tasks.findIndex((task: Task) => task.attributes.completed) < 0
+      ? tasks.length - 1
+      : e.currentTarget.checked
+        ? tasks.findIndex((task: Task) => task.attributes.completed) - 1
+        : tasks.findIndex((task: Task) => task.attributes.completed);
+    const changedTaskIndex = tasks.findIndex((task: Task) => task.id === e.currentTarget.id);
+    const changedTask = tasks[changedTaskIndex];
 
     if (changedTask) {
       changedTask.attributes.completed = e.currentTarget.checked;
@@ -345,7 +355,7 @@ const Home: FunctionComponent = () => {
     if (auth.user && auth.user.settings.hideCompleted) {
       setTasks(tasks.filter((task: Task) => task.id !== e.currentTarget.id));
     } else {
-      setTasks([...tasks]);
+      setTasks(arrayMove(tasks, changedTaskIndex, newPosition));
     }
 
     axios.patch(`/api/tasks/${e.currentTarget.id}`, {
@@ -354,6 +364,7 @@ const Home: FunctionComponent = () => {
         type: 'tasks',
         attributes: {
           completed: e.currentTarget.checked,
+          position: newPosition,
         },
       },
     }, {
@@ -417,11 +428,7 @@ const Home: FunctionComponent = () => {
         <label className={`custom-control-label priority-${task.attributes.priority}`} htmlFor={task.id} />
       </div>
       <Link to={`/tasks/${task.id}`} className={styles.taskContainer}>
-        <div className={`${styles.taskTitle} ${task.attributes.completed ? 'text-muted' : ''}`}>
-          {task.attributes.position}
-          &nbsp;|&nbsp;
-          {task.attributes.title}
-        </div>
+        <div className={`${styles.taskTitle} ${task.attributes.completed ? 'text-muted' : ''}`}>{task.attributes.title}</div>
         <div className={styles.taskTags}>
           {task.attributes['tag-list'].map((tag: string) => (
             <span className={`badge ml-1 ${task.attributes.completed ? 'badge-secondary' : 'badge-dark'}`} data-tag={tag} onClick={handleTagClick} key={tag}>{tag}</span>
@@ -443,7 +450,7 @@ const Home: FunctionComponent = () => {
   const SortableList = SortableContainer(() => (
     <ul className={`list-group ${styles.tasks}`}>
       {tasks.map((task: Task, index: number) => (
-        <SortableItem task={task} key={`task-${task.id}`} index={index} disabled={sort !== 'position'} />
+        <SortableItem task={task} key={`task-${task.id}`} index={index} collection={task.attributes.completed.toString()} disabled={sort !== 'position'} />
       ))}
     </ul>
   ));
