@@ -323,11 +323,13 @@ const Home: FunctionComponent = () => {
           index = tasks
             .filter((task: Task) => task.attributes.completed === false)
             .findIndex(
-              (task: Task) => response.data.data.attributes.title < task.attributes.title,
+              (task: Task) => task.attributes.title
+                .localeCompare(response.data.data.attributes.title) > 0,
             ) === -1
             ? tasks.findIndex((task: Task) => task.attributes.completed === true)
             : tasks.findIndex(
-              (task: Task) => response.data.data.attributes.title < task.attributes.title,
+              (task: Task) => task.attributes.title
+                .localeCompare(response.data.data.attributes.title) > 0,
             );
         } else if (sort === 'priority') {
           index = tasks
