@@ -37,7 +37,7 @@ const Navbar: FunctionComponent<NavbarProps> = ({ className, children }) => {
   const [settings, setSettings] = useState(auth.user?.settings ?? {
     hideCompleted: false,
     addToBottom: false,
-    sort: 'custom',
+    sort: 'position',
   });
 
   const handleSettings = (e: ChangeEvent<HTMLInputElement>): void => {
@@ -53,7 +53,10 @@ const Navbar: FunctionComponent<NavbarProps> = ({ className, children }) => {
         id: auth.user?.id,
         type: 'users',
         attributes: {
-          settings: JSON.stringify(settings),
+          settings: JSON.stringify({
+            ...settings,
+            sort: auth.user?.settings.sort,
+          }),
         },
       },
     }, {
