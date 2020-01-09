@@ -10,6 +10,8 @@ export const newTaskDueDate: string;
 export const newTaskPriority: string;
 export const tasks: string;
 export const taskContainer: string;
+export const taskDragHandle: string;
+export const draggedTask: string;
 export const taskCheckbox: string;
 export const taskTitle: string;
 export const taskTags: string;

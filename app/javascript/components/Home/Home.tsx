@@ -10,12 +10,18 @@ import React, {
   CSSProperties,
 } from 'react';
 import { Link } from 'react-router-dom';
-import { ReactSortable, SortableEvent } from 'react-sortablejs';
+import {
+  SortableContainer,
+  SortableElement,
+  SortableHandle,
+  SortEnd,
+} from 'react-sortable-hoc';
 import { Helmet } from 'react-helmet';
 import { toast } from 'react-toastify';
 import Select, { ValueType, OptionTypeBase, Theme } from 'react-select';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 import axios from 'axios';
+import arrayMove from 'array-move';
 import moment from 'moment';
 import useDebounce from 'utils/useDebounce';
 import { AuthContext } from 'contexts/AuthContext';
@@ -291,28 +297,6 @@ const Home: FunctionComponent = () => {
     }
   };
 
-  const handleSort = (e: SortableEvent): void => {
-    axios.patch(`/api/tasks/${e.item.getAttribute('data-id')}`, {
-      data: {
-        id: e.item.getAttribute('data-id'),
-        type: 'tasks',
-        attributes: {
-          position: e.newIndex as number + 1,
-        },
-      },
-    }, {
-      headers: {
-        'Content-Type': 'application/vnd.api+json',
-        Authorization: auth.token,
-      },
-    }).catch((error) => {
-      toast(error.response.data.error, {
-        type: 'error',
-        toastId: 'sortError',
-      });
-    });
-  };
-
   const handleCheck = (e: ChangeEvent<HTMLInputElement>): void => {
     const changedTask = tasks.find((task: Task) => task.id === e.currentTarget.id);
 
@@ -356,7 +340,71 @@ const Home: FunctionComponent = () => {
     });
   };
 
-  // TODO: https://github.com/SortableJS/react-sortablejs/pull/119
+  const handleSortEnd = (e: SortEnd): void => {
+    const sortedTasks: Task[] = arrayMove(tasks, e.oldIndex, e.newIndex);
+    setTasks(sortedTasks);
+
+    axios.patch(`/api/tasks/${sortedTasks[e.newIndex].id}`, {
+      data: {
+        id: sortedTasks[e.newIndex].id,
+        type: 'tasks',
+        attributes: {
+          position: e.newIndex,
+        },
+      },
+    }, {
+      headers: {
+        'Content-Type': 'application/vnd.api+json',
+        Authorization: auth.token,
+      },
+    }).catch((error) => {
+      toast(error.response.data.error, {
+        type: 'error',
+        toastId: 'sortError',
+      });
+    });
+  };
+
+  const DragHandle = SortableHandle(() => (
+    <div className={`${styles.taskDragHandle} ${sort !== 'position' ? 'invisible' : ''}`}>
+      <FontAwesomeIcon icon="grip-lines" />
+    </div>
+  ));
+
+  const SortableItem = SortableElement(({ task }: { task: Task }) => (
+    <li className="list-group-item d-flex align-items-center">
+      <DragHandle />
+      <div className={`custom-control custom-checkbox ${styles.taskCheckbox}`}>
+        <input type="checkbox" className="custom-control-input" id={task.id} name={task.id} checked={task.attributes.completed} onChange={handleCheck} />
+        <label className={`custom-control-label priority-${task.attributes.priority}`} htmlFor={task.id} />
+      </div>
+      <Link to={`/tasks/${task.id}`} className={styles.taskContainer}>
+        <div className={`${styles.taskTitle} ${task.attributes.completed ? 'text-muted' : ''}`}>{task.attributes.title}</div>
+        <div className={styles.taskTags}>
+          {task.attributes['tag-list'].map((tag: string) => (
+            <span className={`badge ml-1 ${task.attributes.completed ? 'badge-secondary' : 'badge-dark'}`} data-tag={tag} onClick={handleTagClick} key={tag}>{tag}</span>
+          ))}
+        </div>
+        {task.attributes['due-date'] ? (
+          <div className={styles.taskDueDate}>
+            {
+              moment(task.attributes['due-date']).year() === moment().year()
+                ? moment(task.attributes['due-date']).format('MMM D')
+                : moment(task.attributes['due-date']).format('MMM D, YYYY')
+            }
+          </div>
+        ) : ('')}
+      </Link>
+    </li>
+  ));
+
+  const SortableList = SortableContainer(() => (
+    <ul className={`list-group ${styles.tasks}`}>
+      {tasks.map((task: Task, index: number) => (
+        <SortableItem task={task} key={`task-${task.id}`} index={index} disabled={sort !== 'position'} />
+      ))}
+    </ul>
+  ));
 
   return (
     <>
@@ -412,42 +460,12 @@ const Home: FunctionComponent = () => {
               </div>
             </div>
             {tasks ? tasks.length ? (
-              <ReactSortable
-                tag="ul"
-                className={`list-group ${styles.tasks}`}
-                animation={150}
-                list={tasks}
-                setList={setTasks}
-                onSort={handleSort}
-                delay={300}
-                delayOnTouchOnly
-              >
-                {tasks.map((task: Task) => (
-                  <li className="list-group-item d-flex align-items-center" key={task.id}>
-                    <div className={`custom-control custom-checkbox ${styles.taskCheckbox}`}>
-                      <input type="checkbox" className="custom-control-input" id={task.id} name={task.id} checked={task.attributes.completed} onChange={handleCheck} />
-                      <label className={`custom-control-label priority-${task.attributes.priority}`} htmlFor={task.id} />
-                    </div>
-                    <Link to={`/tasks/${task.id}`} className={styles.taskContainer}>
-                      <div className={`${styles.taskTitle} ${task.attributes.completed ? 'text-muted' : ''}`}>{task.attributes.title}</div>
-                      <div className={styles.taskTags}>
-                        {task.attributes['tag-list'].map((tag: string) => (
-                          <span className={`badge ml-1 ${task.attributes.completed ? 'badge-secondary' : 'badge-dark'}`} data-tag={tag} onClick={handleTagClick} key={tag}>{tag}</span>
-                        ))}
-                      </div>
-                      {task.attributes['due-date'] ? (
-                        <div className={styles.taskDueDate}>
-                          {
-                            moment(task.attributes['due-date']).year() === moment().year()
-                              ? moment(task.attributes['due-date']).format('MMM D')
-                              : moment(task.attributes['due-date']).format('MMM D, YYYY')
-                          }
-                        </div>
-                      ) : ('')}
-                    </Link>
-                  </li>
-                ))}
-              </ReactSortable>
+              <SortableList
+                onSortEnd={handleSortEnd}
+                lockAxis="y"
+                helperClass={styles.draggedTask}
+                useDragHandle
+              />
             ) : (
               <div className={styles.noTasks}>
                 <FontAwesomeIcon icon="tasks" />

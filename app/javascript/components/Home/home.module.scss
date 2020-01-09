@@ -122,14 +122,45 @@
 .tasks :global(.list-group-item) {
   border: none;
   padding: 0;
+  margin-left: calc(-16px - 1rem);
 
   &:last-child .taskContainer {
     border-bottom: none;
   }
 
+  &:hover .taskDragHandle {
+    opacity: 1;
+  }
+
   :global(.text-muted) {
     text-decoration: line-through;
   }
+}
+
+.draggedTask {
+  border: none;
+  padding: 0;
+  box-shadow: 0px -20px 20px -20px #ced4da, 0px 20px 20px -20px #ced4da;
+  margin-left: calc(-16px - 1rem);
+
+  .taskDragHandle {
+    opacity: 1;
+  }
+
+  .taskContainer {
+    border-bottom: 1px solid transparent;
+  }
+}
+
+.taskDragHandle {
+  padding: 0 0.5rem;
+  color: #6c757d;
+  cursor: move;
+  opacity: 0;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  transition: opacity 0.1s ease-in-out;
 }
 
 .taskCheckbox {
@@ -215,7 +246,7 @@
 .taskTags {
   text-align: right;
   max-width: 8rem;
-  margin-left: auto;
+  margin: auto 0 auto auto;
 
   span {
     max-width: 6rem;

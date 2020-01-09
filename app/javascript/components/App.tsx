@@ -46,7 +46,7 @@ moment.updateLocale('en-GB', {
 const PrivateRoute: FunctionComponent<RouteProps> = ({ children, ...rest }) => {
   const { auth } = useContext(AuthContext);
 
-  if (localStorage.getItem('user') !== null && !auth.user && !auth.token) {
+  if (!localStorage.getItem('user') && !auth.user && !auth.token) {
     auth.user = JSON.parse(localStorage.getItem('user') as string);
     auth.token = localStorage.getItem('token');
   }
