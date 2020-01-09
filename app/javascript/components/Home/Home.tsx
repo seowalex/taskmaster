@@ -379,7 +379,11 @@ const Home: FunctionComponent = () => {
         <label className={`custom-control-label priority-${task.attributes.priority}`} htmlFor={task.id} />
       </div>
       <Link to={`/tasks/${task.id}`} className={styles.taskContainer}>
-        <div className={`${styles.taskTitle} ${task.attributes.completed ? 'text-muted' : ''}`}>{task.attributes.title}</div>
+        <div className={`${styles.taskTitle} ${task.attributes.completed ? 'text-muted' : ''}`}>
+          {task.attributes.position}
+          &nbsp;|&nbsp;
+          {task.attributes.title}
+        </div>
         <div className={styles.taskTags}>
           {task.attributes['tag-list'].map((tag: string) => (
             <span className={`badge ml-1 ${task.attributes.completed ? 'badge-secondary' : 'badge-dark'}`} data-tag={tag} onClick={handleTagClick} key={tag}>{tag}</span>

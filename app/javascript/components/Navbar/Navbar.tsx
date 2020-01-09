@@ -38,7 +38,7 @@ const Navbar: FunctionComponent<NavbarProps> = (props) => {
   const [settings, setSettings] = useState(auth.user ? auth.user.settings : {
     hideCompleted: false,
     addToBottom: false,
-    moveToBottom: false,
+    sort: 'custom',
   });
 
   const handleSettings = (e: ChangeEvent<HTMLInputElement>): void => {
@@ -155,10 +155,6 @@ const Navbar: FunctionComponent<NavbarProps> = (props) => {
                 <div className="custom-control custom-switch">
                   <input type="checkbox" className="custom-control-input" id="addToBottom" checked={settings.addToBottom} onChange={handleSettings} />
                   <label className="custom-control-label" htmlFor="addToBottom">Add new tasks to the bottom</label>
-                </div>
-                <div className="custom-control custom-switch">
-                  <input type="checkbox" className="custom-control-input" id="moveToBottom" checked={settings.moveToBottom} onChange={handleSettings} />
-                  <label className="custom-control-label" htmlFor="moveToBottom">Move completed tasks to the bottom</label>
                 </div>
               </form>
             </div>

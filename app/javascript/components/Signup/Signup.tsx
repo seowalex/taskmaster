@@ -50,6 +50,12 @@ const Signup: FunctionComponent = () => {
         email: data.email,
         password: data.password,
         password_confirmation: data.passwordConfirmation,
+        name: data.email.substring(0, data.email.lastIndexOf('@')),
+        settings: JSON.stringify({
+          hideCompleted: false,
+          addToBottom: false,
+          sort: 'custom',
+        }),
       },
     }, {
       headers: {
@@ -63,11 +69,7 @@ const Signup: FunctionComponent = () => {
             id: response.data.id,
             email: response.data.email,
             name: response.data.name,
-            settings: {
-              hideCompleted: false,
-              addToBottom: false,
-              moveToBottom: false,
-            },
+            settings: response.data.settings,
           },
           token: response.headers.authorization,
         },

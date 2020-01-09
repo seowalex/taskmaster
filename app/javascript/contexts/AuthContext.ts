@@ -8,7 +8,7 @@ interface AuthState {
     settings: {
       hideCompleted: boolean;
       addToBottom: boolean;
-      moveToBottom: boolean;
+      sort: string;
     };
   } | null;
   token: string | null;
@@ -24,7 +24,7 @@ interface AuthAction {
       readonly settings: {
         readonly hideCompleted: boolean;
         readonly addToBottom: boolean;
-        readonly moveToBottom: boolean;
+        readonly sort: string;
       };
     };
     readonly token: string;
