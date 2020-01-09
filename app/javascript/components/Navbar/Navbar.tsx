@@ -53,7 +53,7 @@ const Navbar: FunctionComponent<NavbarProps> = ({ className, children }) => {
         id: auth.user?.id,
         type: 'users',
         attributes: {
-          settings,
+          settings: JSON.stringify(settings),
         },
       },
     }, {
@@ -68,7 +68,7 @@ const Navbar: FunctionComponent<NavbarProps> = ({ className, children }) => {
           payload: {
             user: {
               ...auth.user,
-              settings: response.data.data.attributes.settings,
+              settings: JSON.parse(response.data.data.attributes.settings),
             },
             token: auth.token,
           },
