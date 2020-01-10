@@ -40,6 +40,10 @@ const Navbar: FunctionComponent<NavbarProps> = ({ className, children }) => {
     sort: 'position',
   });
 
+  const handleSettingsCheck = (): void => {
+    setSettings(auth.user?.settings ?? settings);
+  };
+
   const handleSettings = (e: ChangeEvent<HTMLInputElement>): void => {
     setSettings({
       ...settings,
@@ -121,7 +125,7 @@ const Navbar: FunctionComponent<NavbarProps> = ({ className, children }) => {
                 <FontAwesomeIcon icon="user" className="mr-2" />
                 Profile
               </Link>
-              <button type="button" className="dropdown-item" data-toggle="modal" data-target="#settingsModal">
+              <button type="button" className="dropdown-item" data-toggle="modal" data-target="#settingsModal" onClick={handleSettingsCheck}>
                 <FontAwesomeIcon icon="cog" className="mr-2" />
                 Settings
               </button>
