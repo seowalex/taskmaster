@@ -389,7 +389,6 @@ const Home: FunctionComponent = () => {
         type: 'tasks',
         attributes: {
           completed: e.currentTarget.checked,
-          position: newPosition,
         },
       },
     }, {

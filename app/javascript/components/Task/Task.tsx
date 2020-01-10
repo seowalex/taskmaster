@@ -123,11 +123,13 @@ const Task: FunctionComponent = () => {
     const source = CancelToken.source();
 
     if (task) {
+      const { position, ...attributes } = task.attributes;
+
       axios.patch(task.links.self, {
         data: {
           id,
           type: 'tasks',
-          attributes: task.attributes,
+          attributes,
         },
       }, {
         headers: {

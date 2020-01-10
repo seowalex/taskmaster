@@ -25,6 +25,18 @@ class Api::TaskResource < JSONAPI::Resource
     records.order("completed").order("due_date #{direction}")
   end
 
+  before_update do
+    if !context[:params][:data][:attributes][:completed].nil? && @model.completed != context[:params][:data][:attributes][:completed]
+      if context[:current_user].tasks.order(:position).find_by(completed: true).nil?
+        @model.position = context[:current_user].tasks.count - 1
+      elsif @model.completed
+        @model.position = context[:current_user].tasks.order(:position).find_by(completed: true).position
+      else
+        @model.position = context[:current_user].tasks.order(:position).find_by(completed: true).position - 1
+      end
+    end
+  end
+
   def self.records(options = {})
     context = options[:context]
     context[:current_user].tasks
