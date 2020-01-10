@@ -52,7 +52,7 @@ module.exports = {
       },
     ],
     '@typescript-eslint/camelcase': ['error', {
-      allow: ['password_confirmation'],
+      allow: ['current_password', 'password_confirmation'],
     }],
     'react/jsx-filename-extension': [
       'warn',

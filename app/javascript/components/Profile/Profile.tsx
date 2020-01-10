@@ -37,12 +37,14 @@ interface Error {
 const Profile: FunctionComponent = () => {
   const { auth, dispatchAuth } = useContext(AuthContext);
   const [request, setRequest] = useState({
+    isCurrentPassword: true,
     isPassword: true,
     isPasswordConfirmation: true,
     isLoading: false,
   });
   const [data, setData] = useState({
     name: auth.user?.name,
+    currentPassword: '',
     password: '',
     passwordConfirmation: '',
   });
@@ -55,6 +57,7 @@ const Profile: FunctionComponent = () => {
 
     setRequest({
       ...request,
+      isCurrentPassword: true,
       isPassword: true,
       isPasswordConfirmation: true,
     });
@@ -62,28 +65,22 @@ const Profile: FunctionComponent = () => {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
+    let updateName = Promise.resolve();
+    let updatePassword = Promise.resolve();
 
-    if (data.name !== auth.user?.name || (data.password !== '' && data.password === data.passwordConfirmation)) {
+    if (data.name !== auth.user?.name) {
       setRequest({
         ...request,
         isLoading: true,
       });
 
-      const attributes: UserAttributes = {};
-
-      if (data.name !== auth.user?.name) {
-        attributes.name = data.name;
-      }
-
-      if (data.password !== '') {
-        attributes.password = data.password;
-      }
-
-      axios.patch(`/api/users/${auth.user?.id}`, {
+      updateName = axios.patch(`/api/users/${auth.user?.id}`, {
         data: {
           id: auth.user?.id,
           type: 'users',
-          attributes,
+          attributes: {
+            name: data.name,
+          },
         },
       }, {
         headers: {
@@ -92,21 +89,6 @@ const Profile: FunctionComponent = () => {
         },
       }).then((response) => {
         if (auth.user && auth.token) {
-          toast('Profile successfully updated', {
-            type: 'success',
-          });
-
-          setRequest({
-            ...request,
-            isLoading: false,
-          });
-
-          setData({
-            ...data,
-            password: '',
-            passwordConfirmation: '',
-          });
-
           dispatchAuth({
             type: 'login',
             payload: {
@@ -118,27 +100,151 @@ const Profile: FunctionComponent = () => {
             },
           });
         }
-      }).catch((error) => {
-        setRequest({
-          ...request,
-          isPassword: false,
-          isLoading: false,
-        });
-
-        toast(error.response.data.errors.map((err: Error): string => err.detail?.charAt(0).toUpperCase() as string + err.detail?.substring(1) as string).join('\n'), {
-          type: 'error',
-        });
       });
-    } else if (data.password !== data.passwordConfirmation) {
-      toast('Password confirmation doesn\'t match password', {
-        type: 'error',
+    }
+
+    if (data.password !== '') {
+      setRequest({
+        ...request,
+        isLoading: true,
+      });
+
+      updatePassword = axios.patch('/api/signup', {
+        user: {
+          current_password: data.currentPassword,
+          password: data.password,
+          password_confirmation: data.passwordConfirmation,
+        },
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: auth.token,
+        },
+      });
+    }
+
+    axios.all([
+      updateName,
+      updatePassword,
+    ]).then(() => {
+      toast('Profile successfully updated', {
+        type: 'success',
       });
 
       setRequest({
         ...request,
-        isPasswordConfirmation: false,
+        isLoading: false,
       });
-    }
+
+      setData({
+        ...data,
+        currentPassword: '',
+        password: '',
+        passwordConfirmation: '',
+      });
+    }).catch((error) => {
+      setRequest({
+        isCurrentPassword: !Object.prototype.hasOwnProperty.call(error.response.data.errors, 'current_password'),
+        isPassword: !Object.prototype.hasOwnProperty.call(error.response.data.errors, 'password'),
+        isPasswordConfirmation: !Object.prototype.hasOwnProperty.call(error.response.data.errors, 'password_confirmation'),
+        isLoading: false,
+      });
+
+      let errorMessage = '';
+
+      for (const msg of error.response.data.errors.current_password ?? []) {
+        errorMessage += `Current password ${msg}\n`;
+      }
+
+      for (const msg of error.response.data.errors.password ?? []) {
+        errorMessage += `Password ${msg}\n`;
+      }
+
+      for (const msg of error.response.data.errors.password_confirmation ?? []) {
+        errorMessage += `Password confirmation ${msg}\n`;
+      }
+
+      toast(errorMessage, {
+        type: 'error',
+      });
+    });
+
+    // if (data.name !== auth.user?.name || (data.password !== '' && data.password === data.passwordConfirmation)) {
+    //   setRequest({
+    //     ...request,
+    //     isLoading: true,
+    //   });
+
+    //   const attributes: UserAttributes = {};
+
+    //   if (data.name !== auth.user?.name) {
+    //     attributes.name = data.name;
+    //   }
+
+    //   if (data.password !== '') {
+    //     attributes.password = data.password;
+    //   }
+
+    //   axios.patch(`/api/users/${auth.user?.id}`, {
+    //     data: {
+    //       id: auth.user?.id,
+    //       type: 'users',
+    //       attributes,
+    //     },
+    //   }, {
+    //     headers: {
+    //       'Content-Type': 'application/vnd.api+json',
+    //       Authorization: auth.token,
+    //     },
+    //   }).then((response) => {
+    //     if (auth.user && auth.token) {
+    //       toast('Profile successfully updated', {
+    //         type: 'success',
+    //       });
+
+    //       setRequest({
+    //         ...request,
+    //         isLoading: false,
+    //       });
+
+    //       setData({
+    //         ...data,
+    //         password: '',
+    //         passwordConfirmation: '',
+    //       });
+
+    //       dispatchAuth({
+    //         type: 'login',
+    //         payload: {
+    //           user: {
+    //             ...auth.user,
+    //             name: response.data.data.attributes.name,
+    //           },
+    //           token: auth.token,
+    //         },
+    //       });
+    //     }
+    //   }).catch((error) => {
+    //     setRequest({
+    //       ...request,
+    //       isPassword: false,
+    //       isLoading: false,
+    //     });
+
+    //     toast(error.response.data.errors.map((err: Error): string => err.detail?.charAt(0).toUpperCase() as string + err.detail?.substring(1) as string).join('\n'), {
+    //       type: 'error',
+    //     });
+    //   });
+    // } else if (data.password !== data.passwordConfirmation) {
+    //   toast('Password confirmation doesn\'t match password', {
+    //     type: 'error',
+    //   });
+
+    //   setRequest({
+    //     ...request,
+    //     isPasswordConfirmation: false,
+    //   });
+    // }
   };
 
   return (
@@ -163,11 +269,15 @@ const Profile: FunctionComponent = () => {
                   <label htmlFor="name">Name</label>
                 </div>
                 <div className={`form-group ${styles.formLabelGroup}`}>
+                  <input type="password" id="currentPassword" className={`form-control ${request.isCurrentPassword ? '' : 'is-invalid'}`} placeholder="Current Password" value={data.currentPassword} onChange={handleChange} required={data.password !== ''} />
+                  <label htmlFor="currentPassword">Current Password</label>
+                </div>
+                <div className={`form-group ${styles.formLabelGroup}`}>
                   <input type="password" id="password" className={`form-control ${request.isPassword ? '' : 'is-invalid'}`} placeholder="New Password" value={data.password} onChange={handleChange} />
                   <label htmlFor="password">New Password</label>
                 </div>
                 <div className={`form-group ${styles.formLabelGroup}`}>
-                  <input type="password" id="passwordConfirmation" className={`form-control ${request.isPasswordConfirmation ? '' : 'is-invalid'}`} placeholder="Confirm New Password" value={data.passwordConfirmation} onChange={handleChange} />
+                  <input type="password" id="passwordConfirmation" className={`form-control ${request.isPasswordConfirmation ? '' : 'is-invalid'}`} placeholder="Confirm New Password" value={data.passwordConfirmation} onChange={handleChange} required={data.password !== ''} />
                   <label htmlFor="passwordConfirmation">Confirm New Password</label>
                 </div>
                 <button className="btn btn-lg btn-primary btn-block" type="submit">
