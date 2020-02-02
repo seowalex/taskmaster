@@ -4,10 +4,18 @@
 
 **Matriculation Number:** A0199262U
 
+## Working demo
+
+[Taskmaster](https://afternoon-oasis-11571.herokuapp.com/)
+
+## Final write-up
+
+[Final write-up](/../assignment-submission/final_writeup.pdf?raw=true)
+
 ## Screenshot
 
-![Screenshot](/../mid-assignment-submission/screenshot.png?raw=true)
+![Screenshot](/../assignment-submission/screenshot.png?raw=true)
 
-## Write-up
+## Mid-assignment write-up
 
-[Write-up](/../mid-assignment-submission/writeup.pdf?raw=true)
+[Mid-assignment write-up](/../assignment-submission/writeup.pdf?raw=true)
