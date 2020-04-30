@@ -27,7 +27,7 @@
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
     "bootstrap": "^4.4.1",
     "directory-named-webpack-plugin": "^4.0.1",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "moment": "^2.24.0",
     "pnp-webpack-plugin": "^1.5.0",
     "popper.js": "^1.16.0",
