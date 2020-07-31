@@ -1,21 +1,38 @@
-# Computing for Voluntary Welfare Organisations (CVWO) AY2019/20 Assignment
+# Taskmaster
 
-**Name:** Seow Alex
+Taskmaster is a simple to-do app built on Rails, React, Typescript and PostgreSQL as part of the Computing for Voluntary Welfare Organisations (CVWO) assignment.
 
-**Matriculation Number:** A0199262U
+Features include:
+* User accounts
+* Task categorisation using tags
+* Task priorities
+* Task sorting using an intuitive drag and drop interface
 
-## Working demo
+## Getting Started
+### Requirements
+* `node` (v12.16.3)
+* `ruby` (v2.6.5)
+* `postgresql` (v12.3)
 
-[Taskmaster](https://afternoon-oasis-11571.herokuapp.com/)
-
-## Final write-up
-
-[Final write-up](/../assignment-submission/final_writeup.pdf?raw=true)
-
-## Screenshot
-
-![Screenshot](/../assignment-submission/screenshot.png?raw=true)
-
-## Mid-assignment write-up
-
-[Mid-assignment write-up](/../assignment-submission/writeup.pdf?raw=true)
+### Setup
+1. Install dependencies
+```
+bundle install
+yarn install
+```
+2. Generate Rails credentials
+```
+bundle exec rails credentials:edit
+```
+3. Setup database
+```
+bundle exec rails db:create
+bundle exec rails db:migrate
+bundle exec rails db:seed
+```
+4. Run application
+```
+bundle exec rails s
+bin/webpack-dev-server
+yarn watch-typings
+```
