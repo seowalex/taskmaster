@@ -21,6 +21,7 @@
 .byebug_history
 
 # Ignore master key for decrypting credentials and more.
+/config/credentials.yml.enc
 /config/master.key
 
 /public/packs
