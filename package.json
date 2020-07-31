@@ -1,5 +1,5 @@
 {
-  "name": "cvwo",
+  "name": "taskmaster",
   "private": true,
   "scripts": {
     "gen-typings": "yarn run tsm 'app/javascript/**/*.scss'",
