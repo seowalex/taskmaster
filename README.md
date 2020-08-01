@@ -13,6 +13,7 @@ Features include:
 * `node` (v12.16.3)
 * `ruby` (v2.6.5)
 * `postgresql` (v12.3)
+* `yarn` (v1.22.4)
 
 ### Setup
 1. Install dependencies
