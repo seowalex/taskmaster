@@ -81,5 +81,5 @@ test:
 production:
   <<: *default
   database: taskmaster_production
-  username: taskmaster
+  username: <%= ENV['TASKMASTER_DATABASE_USERNAME'] %>
   password: <%= ENV['TASKMASTER_DATABASE_PASSWORD'] %>
