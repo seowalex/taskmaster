@@ -184,7 +184,6 @@ const Profile: FunctionComponent = () => {
               </Link>
             </Navbar>
             <div className="mt-5 mb-5 d-flex flex-column align-items-center">
-              <img src={`https://api.adorable.io/avatars/300/${auth.user?.name}@adorable.io.png`} alt="Profile" className={styles.profileImg} />
               <form className="w-100" onSubmit={handleSubmit}>
                 <h1 className={styles.email}>{auth.user?.email}</h1>
                 <div className={`form-group ${styles.formLabelGroup}`}>
