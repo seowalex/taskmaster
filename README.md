@@ -37,3 +37,28 @@ bundle exec rails s
 bin/webpack-dev-server
 yarn watch-typings
 ```
+
+### Deploy
+*Note: Ensure that `RAILS_ENV=production` is set for all of the following commands.*
+1. Install dependencies
+```
+bundle install
+yarn install
+```
+2. Generate Rails credentials
+```
+bundle exec rails credentials:edit
+```
+3. Setup database
+```
+bundle exec rails db:create
+bundle exec rails db:migrate
+```
+4. Precompile assets
+```
+bundle exec rails assets:precompile
+```
+5. Run application
+```
+bundle exec rails s
+```
